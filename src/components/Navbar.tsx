@@ -35,9 +35,9 @@ export default function Navbar() {
     { icon: CircleUserRound, label: "Profile" },
   ]
 
-  const searchAndAdd =[
-    {icon: Search, label: "Search"},
-    {icon: Plus, label: "Create"},
+  const searchAndAdd = [
+    { icon: Search, label: "Search" },
+    { icon: Plus, label: "Create" },
   ]
 
 
@@ -49,9 +49,9 @@ export default function Navbar() {
         </div>
         <div className="d-flex align-items-center   justify-content-end  gap-3 w-50 w-md-50 me-1">
           <input type="text" placeholder="Search..." className="d-none d-md-block rounded border border-dark py-2 px-3 w-100" />
-          
+
           <button className="btn btn-primary d-none d-md-flex align-items-center ">
-            <Plus size={16}/> Create
+            <Plus size={16} /> Create
           </button>
           <ul className="list-unstyled d-flex d-md-none  my-auto gap-1">
             {searchAndAdd.map((item, index) => (

@@ -27,6 +27,7 @@ li .tooltip-wrapper:hover .custom-tooltip-nav {
   left: 130%;
   transform: translateY(-50%);
 }
+
 .custom-tooltip-nav.right::before {
   content: "";
   position: absolute;
@@ -44,6 +45,7 @@ li .tooltip-wrapper:hover .custom-tooltip-nav {
   right: 130%;
   transform: translateY(-50%);
 }
+
 .custom-tooltip-nav.left::before {
   content: "";
   position: absolute;
@@ -61,6 +63,7 @@ li .tooltip-wrapper:hover .custom-tooltip-nav {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .custom-tooltip-nav.top::before {
   content: "";
   position: absolute;
@@ -78,6 +81,7 @@ li .tooltip-wrapper:hover .custom-tooltip-nav {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .custom-tooltip-nav.bottom::before {
   content: "";
   position: absolute;
