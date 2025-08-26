@@ -1,42 +1,84 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    font-family: 'Roboto', sans-serif;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+:root {
+  --text-color: #000000;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.text-color {
+  color: var(--text-color);
+}
+
+.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+li.active svg {
+  color: white;
+}
+
+li {
+  position: relative;
+}
+
+.custom-tooltip {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 130%; /* move to the right of the icon */
+  transform: translateY(-50%);
+  background-color: #ffffff;
+  color: #000;
+  border: 1px solid gray;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Show tooltip on hover */
+li:hover .custom-tooltip {
+  display: block;
+}
+
+/* Arrow pointing left */
+.custom-tooltip::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid gray; /* Same as tooltip background */
+}
+
+@media (max-width: 767.98px) {
+  /* Styles here will only apply on mobile devices */
+  .custom-tooltip {
+    left: 50%;
+    top: -80%; /* move below the icon */
+    transform: translateX(-50%);
   }
-  to {
-    transform: rotate(360deg);
+
+  .custom-tooltip::before {
+    content: "";
+    position: absolute;
+    top: 120%;
+    left: 45%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 6px solid gray;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid transparent; 
+    border-left: 6px solid transparent; /* Same as tooltip background */
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
