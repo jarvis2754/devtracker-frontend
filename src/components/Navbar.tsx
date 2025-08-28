@@ -42,7 +42,7 @@ export default function Navbar() {
 
 
   return (
-    <nav className="d-flex flex-column position-fixed" style={{ height: "100vh", width: "100vw" }} >
+    <nav className="d-flex flex-column position-fixed z-3" style={{ height: "100vh", width: "100vw" }} >
       <div className="d-flex justify-content-between shadow p-1">
         <div className="d-flex align-items-center">
           <h2 className="text-dark mx-1 mx-md-3 fw-bolder ">DevTracker.</h2>

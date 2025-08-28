@@ -25,5 +25,36 @@ li.active svg {
 li {
   position: relative;
 }
+.clamp-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clamp-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+
+@media (max-width: 500px) {
+   .card{
+    flex-direction: row;
+  }
+}
+
 
 @media (min-width: 768px) { .w-md-50 { width: 50% !important; } }
