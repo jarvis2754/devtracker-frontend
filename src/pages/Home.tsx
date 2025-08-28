@@ -44,38 +44,40 @@ export default function Home() {
         { id: 2, name: "Charlie Brown", role: "Designer" },
       ],
     },
+    
+    
   ];
   return (
     <section
-      className="container d-flex justify-content-center align-items-center flex-column z-3"
+      className="container d-flex justify-content-center z-2"
       style={{ height: "100vh" }}
     >
-      <div className="container d-flex justify-content-center">
-        <div
-          className=" container d-flex flex-wrap gap-3 justify-content-center justify-content-md-between  "
-          style={{ width: "950px" }}
-        >
-          <div className="card shadow border-0 p-3" style={{ width: "18rem" }}>
-            <h4>Create new project</h4>
-            <Plus size={100} className="mx-auto" />
-          </div>
-          {project.map((proj) => (
-            <div
-              key={proj.projectId}
-              className="card shadow border-0 p-3"
-              style={{ width: "18rem" }}
-            >
-              <h5 className="clamp-title ">{proj.projectName}</h5>
-              <p className="clamp-description">{proj.projectDesc}</p>
-              <p>
-                <strong>Team Lead:</strong> {proj.teamLead}
-              </p>
-              <p>
-                <strong>Status:</strong> {proj.status}
-              </p>
-            </div>
-          ))}
+      <div className="container row " style={{width:"85%" , margin:"10%"}}>
+        <div className="col-12 col-md-6 col-lg-4 p-2">
+        <div className="bg-light card shadow-sm border-0 p-3 w-100 h-100" >
+          <h4>Create</h4>
+          <p>Click add to create your project</p>
+          <Plus size={50} className="text-primary mx-auto" />
         </div>
+        </div>
+        {project.map((proj) => (
+          <div className=" col-12 col-md-6 col-lg-4 p-2">
+            <div key={proj.projectId}
+            className=" bg-light card shadow-sm border-0 p-3 w-100 h-100"
+            >
+            <h5 className="clamp-title ">{proj.projectName}</h5>
+            <p className="clamp-description">{proj.projectDesc}</p>
+            <p>
+              <strong>Team Lead:</strong> {proj.teamLead}
+            </p>
+            <p>
+              <strong>Status:</strong> {proj.status}
+            </p>
+            </div>
+          </div>
+        ))}
+        
+
       </div>
     </section>
   );
