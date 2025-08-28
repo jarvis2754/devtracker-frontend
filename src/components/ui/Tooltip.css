@@ -1,0 +1,94 @@
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-tooltip-nav {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  color: #000;
+  border: 1px solid gray;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+li .tooltip-wrapper:hover .custom-tooltip-nav {
+  display: block;
+}
+
+/* -------- Directions -------- */
+
+/* Right */
+.custom-tooltip-nav.right {
+  top: 50%;
+  left: 130%;
+  transform: translateY(-50%);
+}
+
+.custom-tooltip-nav.right::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid gray;
+}
+
+/* Left */
+.custom-tooltip-nav.left {
+  top: 50%;
+  right: 130%;
+  transform: translateY(-50%);
+}
+
+.custom-tooltip-nav.left::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid gray;
+}
+
+/* Top */
+.custom-tooltip-nav.top {
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-tooltip-nav.top::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 6px solid gray;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+
+/* Bottom */
+.custom-tooltip-nav.bottom {
+  top: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-tooltip-nav.bottom::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom: 6px solid gray;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
