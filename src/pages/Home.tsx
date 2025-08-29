@@ -1,6 +1,9 @@
 import { Plus } from "lucide-react";
+import { useState } from "react";
+import Todo from "../components/Todo";
 
-export default function Home() {
+const Home: React.FC = () => {
+  const [showPopup, setShowPopup] = useState(false);
   const project = [
     {
       projectId: 1,
@@ -58,29 +61,105 @@ export default function Home() {
         { id: 2, name: "Charlie Brown", role: "Designer" },
       ],
     },
-    
-
-
+    {
+      projectId: 3,
+      projectName: "Project Gamma",
+      projectDesc: "A project to improve the user interface.",
+      teamLead: "Alice Johnson",
+      createdAt: new Date("2023-01-01"),
+      deadLine: new Date("2023-12-31"),
+      createdBy: "Alice Johnson",
+      status: "In Progress",
+      teamMembers: [
+        { id: 1, name: "Bob Smith", role: "Developer" },
+        { id: 2, name: "Charlie Brown", role: "Designer" },
+      ],
+    },
+    {
+      projectId: 3,
+      projectName: "Project Gamma",
+      projectDesc: "A project to improve the user interface.",
+      teamLead: "Alice Johnson",
+      createdAt: new Date("2023-01-01"),
+      deadLine: new Date("2023-12-31"),
+      createdBy: "Alice Johnson",
+      status: "In Progress",
+      teamMembers: [
+        { id: 1, name: "Bob Smith", role: "Developer" },
+        { id: 2, name: "Charlie Brown", role: "Designer" },
+      ],
+    },
+    {
+      projectId: 3,
+      projectName: "Project Gamma",
+      projectDesc: "A project to improve the user interface.",
+      teamLead: "Alice Johnson",
+      createdAt: new Date("2023-01-01"),
+      deadLine: new Date("2023-12-31"),
+      createdBy: "Alice Johnson",
+      status: "In Progress",
+      teamMembers: [
+        { id: 1, name: "Bob Smith", role: "Developer" },
+        { id: 2, name: "Charlie Brown", role: "Designer" },
+      ],
+    },
+    {
+      projectId: 3,
+      projectName: "Project Gamma",
+      projectDesc: "A project to improve the user interface.",
+      teamLead: "Alice Johnson",
+      createdAt: new Date("2023-01-01"),
+      deadLine: new Date("2023-12-31"),
+      createdBy: "Alice Johnson",
+      status: "In Progress",
+      teamMembers: [
+        { id: 1, name: "Bob Smith", role: "Developer" },
+        { id: 2, name: "Charlie Brown", role: "Designer" },
+      ],
+    },
+    {
+      projectId: 3,
+      projectName: "Project Gamma",
+      projectDesc: "A project to improve the user interface.",
+      teamLead: "Alice Johnson",
+      createdAt: new Date("2023-01-01"),
+      deadLine: new Date("2023-12-31"),
+      createdBy: "Alice Johnson",
+      status: "In Progress",
+      teamMembers: [
+        { id: 1, name: "Bob Smith", role: "Developer" },
+        { id: 2, name: "Charlie Brown", role: "Designer" },
+      ],
+    },
   ];
   return (
     <section
-      className="container d-flex justify-content-center flex-column z-2"
+      className="container d-flex justify-content-center flex-column "
       style={{ height: "100vh" }}
     >
-
-      <div className="container row m-auto" style={{ width: "85%", height: "60%" }}>
+      <div
+        className="container row m-auto"
+        style={{ width: "85%", height: "60%" }}
+      >
         <div className="col-12 col-md-6 col-lg-4 p-2">
-          <div className="bg-light card shadow border-dark p-3 w-100 h-100" >
+          <div className="bg-light card shadow border-dark p-3 w-100 h-100">
             <h4>Create</h4>
             <p>Click add to create your project</p>
 
-            <Plus size={50} className="text-primary mt-2 mx-auto" />
-
+            <div className="d-flex justify-content-center mt-3">
+              <button
+                className="btn btn-primary  rounded-pill"
+                onClick={() => setShowPopup(true)}
+              >
+                <Plus size={20} className="me-2" /> Add Project
+              </button>
+            </div>
           </div>
         </div>
         {project.map((proj) => (
-          <div className=" col-12 col-md-6 col-lg-4 p-2">
-            <div key={proj.projectId}
+          <div className=" col-12 col-md-6 col-lg-4 p-2 ">
+            <div
+              key={proj.projectId}
               className=" bg-light card shadow border-0 p-3 w-100 h-100"
             >
               <h5 className="clamp-title ">{proj.projectName}</h5>
@@ -94,9 +173,9 @@ export default function Home() {
             </div>
           </div>
         ))}
-
-
       </div>
+      {showPopup && <Todo onClose={() => setShowPopup(false)} />}
     </section>
   );
-}
+};
+export default Home;
