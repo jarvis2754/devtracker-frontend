@@ -42,8 +42,8 @@ export default function Navbar() {
 
 
   return (
-    <nav className="d-flex flex-column position-fixed" style={{ height: "100vh", width: "100vw" }} >
-      <div className="d-flex justify-content-between shadow p-1">
+    <nav className="d-flex flex-column position-fixed z-3" style={{ height: "100vh", width: "100vw" }} >
+      <div className="d-flex bg-light justify-content-between shadow p-1">
         <div className="d-flex align-items-center">
           <h2 className="text-dark mx-1 mx-md-3 fw-bolder ">DevTracker.</h2>
         </div>
@@ -66,7 +66,7 @@ export default function Navbar() {
           </ul>
         </div>
         <div>
-          <ul className="list-unstyled d-flex flex-row my-3 gap-1 gap-md-3">
+          <ul className="list-unstyled d-flex flex-row my-3 gap-1 gap-md-3 me-5">
             {navIcons.map((item, index) => (
               <li key={index} className="position-relative  ">
                 <Tooltip text={item.label} mobilePosition="bottom" desktopPosition="bottom">
@@ -81,7 +81,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="d-flex align-items-end align-items-md-center justify-content-center justify-content-md-start " style={{ height: "80vh" }} >
-        <ul className="list-unstyled shadow  rounded m-3 d-inline-flex flex-row flex-md-column dap-2 gap-md-4">
+        <ul className="list-unstyled bg-light  shadow  rounded m-3 d-inline-flex flex-row flex-md-column dap-2 gap-md-4">
           {navlinks.map((link) => (
             <li key={link.path} className={`position-relative m-2 ${isActive(link.path) ? 'bg-primary rounded' : ''}`}>
               <Tooltip text={link.label} mobilePosition="top" desktopPosition="right">
