@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import './App.css'
 import Signup from './pages/auth/Signup'
+import SideNavbar from './components/SideNavbar'
 
 function App() {
   const location = useLocation();
@@ -12,6 +13,7 @@ function App() {
   return (
     <>
       {!hideNav() && <Navbar />}
+      {!hideNav() && <SideNavbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/messages" element={<Home />} />
