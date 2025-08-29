@@ -116,3 +116,73 @@ body::after {
     width: 50% !important;
   }
 }
+
+/* login */
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      overflow: hidden;
+      padding: 15px;
+    }
+
+    /* Background bubbles */
+    body::before, body::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.06);
+      z-index: 0;
+    }
+
+    body::before {
+      width: 500px;
+      height: 500px;
+      top: -150px;
+      left: -150px;
+    }
+
+    body::after {
+      width: 400px;
+      height: 400px;
+      bottom: -150px;
+      right: -150px;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      padding: 35px 25px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 576px) {
+      body::before {
+        width: 260px;
+        height: 260px;
+        top: -70px;
+        left: -70px;
+      }
+
+      body::after {
+        width: 220px;
+        height: 220px;
+        bottom: -70px;
+        right: -70px;
+      }
+
+      .login-card {
+        padding: 25px 20px;
+        max-width: 95%;
+      }
+    }
+
