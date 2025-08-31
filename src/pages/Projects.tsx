@@ -2,62 +2,54 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import Todo from "../components/Todo";
 
-const Home: React.FC = () => {
+const Projects: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
   const project = [
     {
       projectId: 1,
       projectName: "Project Alpha",
       projectDesc: "A project to improve the user interface.",
-      teamLead: "Alice Johnson",
+      teamLeadId: 1,
       createdAt: new Date("2023-01-01"),
       deadLine: new Date("2023-12-31"),
-      createdBy: "Alice Johnson",
-      status: "In Progress",
-      teamMembers: [
-        { id: 1, name: "Bob Smith", role: "Developer" },
-        { id: 2, name: "Charlie Brown", role: "Designer" },
+      createdById:1,
+      status: "Active",
+      teamMembersIds: [
+        1,2
       ],
     },
     {
       projectId: 2,
       projectName: "Project Beta",
-      projectDesc: "A project to enhance the backend services.",
-      teamLead: "Bob Smith",
-      createdAt: new Date("2023-02-01"),
+      projectDesc: "A project to improve the user interface.",
+      teamLeadId: 3,
+      createdAt: new Date("2023-01-01"),
       deadLine: new Date("2023-12-31"),
-      createdBy: "Alice Johnson",
-      status: "In Progress",
-      teamMembers: [
-        { id: 1, name: "Bob Smith", role: "Developer" },
-        { id: 2, name: "Charlie Brown", role: "Designer" },
+      createdById:1,
+      status: "In progress",
+      teamMembersIds: [
+        1,2
       ],
     },
     {
       projectId: 3,
       projectName: "Project Gamma",
       projectDesc: "A project to improve the user interface.",
-      teamLead: "Alice Johnson",
+      teamLeadId: 3,
       createdAt: new Date("2023-01-01"),
       deadLine: new Date("2023-12-31"),
-      createdBy: "Alice Johnson",
-      status: "In Progress",
-      teamMembers: [
-        { id: 1, name: "Bob Smith", role: "Developer" },
-        { id: 2, name: "Charlie Brown", role: "Designer" },
+      createdById:1,
+      status: "Active",
+      teamMembersIds: [
+        1,2
       ],
     },
     
   ];
   return (
-    <section
-      className="container d-flex justify-content-center flex-column "
-      style={{ height: "100vh" }}
-    >
+    <section>
       <div
-        className="container row m-auto"
-        style={{ width: "85%", height: "60%" }}
-      >
+        className="container row " >
         <div className="col-12 col-md-6 col-lg-4 p-2">
           <div className="bg-light card shadow border-dark p-3 w-100 h-100">
             <h4>Create</h4>
@@ -82,7 +74,7 @@ const Home: React.FC = () => {
               <h5 className="clamp-title ">{proj.projectName}</h5>
               <p className="clamp-description">{proj.projectDesc}</p>
               <p>
-                <strong>Team Lead:</strong> {proj.teamLead}
+                <strong>Team Lead:</strong> {proj.teamLeadId}
               </p>
               <p>
                 <strong>Status:</strong> {proj.status}
@@ -95,4 +87,4 @@ const Home: React.FC = () => {
     </section>
   );
 };
-export default Home;
+export default Projects;

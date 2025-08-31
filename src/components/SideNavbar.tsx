@@ -3,7 +3,7 @@ import {
   Home,
   Users,
   MessageSquareMore,
-  ListTodo,
+  Cuboid,
   Settings,
 } from "lucide-react";
 import Tooltip from "./ui/Tooltip";
@@ -13,14 +13,14 @@ function SideNavbar() {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname===path||location.pathname.startsWith(path+"/");
   };
 
   const navlinks = [
     { path: "/", icon: Home, label: "Home" },
     { path: "/messages", icon: MessageSquareMore, label: "Messages" },
-    { path: "/tasks", icon: Users, label: "Tasks" },
-    { path: "/members", icon: ListTodo, label: "Members" },
+    { path: "/projects", icon: Cuboid, label: "Projects" },
+    { path: "/members", icon: Users, label: "Members" },
     { path: "/settings", icon: Settings, label: "Settings" },
   ];
   return (

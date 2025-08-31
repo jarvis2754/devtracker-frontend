@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import Tooltip from "./ui/Tooltip";
 import "./ui/Tooltip.css";
+import SideNavbar from "./SideNavbar";
+import { Outlet } from "react-router-dom";
 
 export default function Navbar() {
 
@@ -75,7 +77,10 @@ export default function Navbar() {
           </ul>
         </div>
       </div>
-
+      <SideNavbar/>
+      <main>
+        <Outlet/>
+      </main>
       
     </nav>
   );
