@@ -6,6 +6,18 @@ import Signup from './pages/auth/Signup'
 import SideNavbar from './components/SideNavbar'
 import Login from './pages/auth/Login'
 
+import Summary from './pages/Summary'
+
+import Activities from './pages/Activities'
+import Projects from './pages/Projects'
+import Board from './pages/Board'
+import ListTasks from './pages/ListTasks'
+import ProjectLayout from './pages/ProjectLayout'
+import Login from './pages/auth/Login'
+import ProtectedRoute from './components/ProtectedRoute'
+import Settings from './pages/Settings'
+
+
 function App() {
   const location = useLocation();
   const hideNav = () => {
@@ -16,13 +28,23 @@ function App() {
       {!hideNav() && <Navbar />}
       {!hideNav() && <SideNavbar />}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/messages" element={<Home />} />
-        <Route path="/tasks" element={<Home />} />
-        <Route path="/members" element={<Home />} />
-        <Route path="/settings" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+        {/*protected routes*/}
+        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/messages" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+
+        <Route path="/projects" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
+          <Route index element={<ProtectedRoute><Projects /></ProtectedRoute>} />
+          <Route path="summary" element={<ProtectedRoute><Summary /></ProtectedRoute>} />
+          <Route path="listTasks" element={<ProtectedRoute><ListTasks /></ProtectedRoute>} />
+          <Route path="board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
+          <Route path="activities" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
+        </Route>
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
       </Routes>
     </>
   )
