@@ -60,9 +60,9 @@ const CardItem: React.FC<CardItemProps> = ({ todo, index }) => {
             </header>
 
             <main className="mb-3">
-              <h5 className="card-title">{todo.title}</h5>
+              <h6 className="card-title clamp-title fw-bold">{todo.title}</h6>
               {todo.description && (
-                <p className="card-text text-muted">{todo.description}</p>
+                <p className="card-text text-muted clamp-description">{todo.description}</p>
               )}
             </main>
 

@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import Tooltip from "../components/ui/Tooltip";
 import "../components/ui/Tooltip.css";
-import { ScrollText, Rows3, LayoutDashboard, Activity, Cuboid } from "lucide-react";
+import { ScrollText, Rows3, LayoutDashboard, Activity } from "lucide-react";
 
 
 export default function () {
     const navlinks = [
-        { path: "", label: "Projects", icon: Cuboid },
-        { path: "summary", label: "Summary", icon: ScrollText },
+        
+        { path: "", label: "Summary", icon: ScrollText },
         { path: "listTasks", label: "List Tasks", icon: Rows3 },
         { path: "board", label: "Board", icon: LayoutDashboard },
         { path: "activities", label: "Activities", icon: Activity },

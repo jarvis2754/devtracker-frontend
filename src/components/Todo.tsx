@@ -5,15 +5,16 @@ import "../App.css";
 import type { Project, TeamMember } from "../types/ProjectTypes";
 
 interface TodoProps {
-  onClose: () => void; 
+  onClose: () => void;
+  onProjectAdded: (project: Project) => void;
 }
 
-const Todo: React.FC<TodoProps> = ({ onClose }) => {
+const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
   const [projectName, setProjectName] = useState("");
   const [projectDesc, setProjectDesc] = useState("");
   const [teamLead, setTeamLead] = useState("");
   const [deadline, setDeadline] = useState("");
-  
+
   const [teams, setTeams] = useState<TeamMember[]>([]);
   const [showTeamInput, setShowTeamInput] = useState(false);
 
@@ -48,8 +49,6 @@ const Todo: React.FC<TodoProps> = ({ onClose }) => {
     };
 
     try {
-      console.log("Token:", localStorage.getItem("token"));
-
       const response = await axios.post("http://localhost:8080/project/add", newProject, {
         headers: {
           "Content-Type": "application/json",
@@ -57,14 +56,25 @@ const Todo: React.FC<TodoProps> = ({ onClose }) => {
         },
       });
 
-      console.log("✅ Project created:", response.data);
-      alert("Project created successfully!");
+      const addedProject: Project = {
+        projectId: response.data.projectId, // must exist in backend response
+        projectName: response.data.projectName || projectName,
+        projectDesc: response.data.projectDesc || projectDesc,
+        teamLead: response.data.teamLead || teamLead,
+        status: response.data.status || "ACTIVE",
+        deadLine: response.data.deadLine || deadline,
+        teamMembers: response.data.teamMembers || teams,
+      };
+      onProjectAdded(addedProject);
+
       onClose();
     } catch (error) {
       console.error("❌ Error creating project:", error);
       alert("Failed to create project.");
     }
   };
+
+
 
   return (
     <div className="popup-overlay">
@@ -123,7 +133,7 @@ const Todo: React.FC<TodoProps> = ({ onClose }) => {
       </div>
     </div>
   );
-  
+
 };
 
 export default Todo;

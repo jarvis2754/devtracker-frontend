@@ -5,15 +5,12 @@ import './App.css'
 import Signup from './pages/auth/Signup'
 import SideNavbar from './components/SideNavbar'
 import Login from './pages/auth/Login'
-
 import Summary from './pages/Summary'
-
 import Activities from './pages/Activities'
-import Projects from './pages/Projects'
+
 import Board from './pages/Board'
 import ListTasks from './pages/ListTasks'
 import ProjectLayout from './pages/ProjectLayout'
-import Login from './pages/auth/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import Settings from './pages/Settings'
 
@@ -36,9 +33,8 @@ function App() {
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/messages" element={<ProtectedRoute><Home /></ProtectedRoute>} />
 
-        <Route path="/projects" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
-          <Route index element={<ProtectedRoute><Projects /></ProtectedRoute>} />
-          <Route path="summary" element={<ProtectedRoute><Summary /></ProtectedRoute>} />
+        <Route path="/projects/:id" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
+          <Route index element={<ProtectedRoute><Summary /></ProtectedRoute>} />
           <Route path="listTasks" element={<ProtectedRoute><ListTasks /></ProtectedRoute>} />
           <Route path="board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
           <Route path="activities" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
