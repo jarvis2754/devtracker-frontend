@@ -43,7 +43,7 @@ li {
 /* Default (mobile) */
 .floating-navbar {
   position: fixed;
-  bottom: 20px;
+  bottom: -15px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1030; /* higher than Bootstrap navbar */

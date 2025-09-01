@@ -45,8 +45,8 @@ const Board: React.FC = () => {
       createdAt: "2025-08-31T08:50:40.556+00:00"
     },
     {
-      title: "scroll position implement",
-      description: "implement this feature",
+      title: "scroll position implementation ",
+      description: "implement this feature so we can able to track the scroll position for multiple places",
       type: "FEATURE",
       status: "AWAIT_APPROVAL",
       priority: "LOW",

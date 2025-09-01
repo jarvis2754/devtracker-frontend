@@ -1,4 +1,4 @@
-import { useState,type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -24,7 +24,7 @@ export default function Login() {
   };
 
   return (
-   <div className="container-fluid bg-light min-vh-100 d-flex justify-content-center align-items-center">
+    <div className="container-fluid bg-light min-vh-100 d-flex justify-content-center align-items-center">
       <div className="row w-100 justify-content-center">
         <div className="col-11 col-sm-8 col-md-6 col-lg-5 bg-white rounded-4 shadow p-5">
           <h1 className="fw-bold mb-3 text-center fs-4 fs-md-3 fs-lg-2 text-nowrap">
@@ -32,12 +32,16 @@ export default function Login() {
           </h1>
           <p className="text-muted mb-4 text-center">Sign in to continue</p>
 
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="mb-3">
               <input
                 type="email"
                 className="form-control form-control-lg rounded-3"
                 placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+
               />
             </div>
             <div className="mb-3">
@@ -45,6 +49,10 @@ export default function Login() {
                 type="password"
                 className="form-control form-control-lg rounded-3"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+
               />
             </div>
             <button
@@ -57,9 +65,10 @@ export default function Login() {
               Sign In
             </button>
             <div className="text-center mt-3">
-              <a href="#" className="text-primary text-decoration-none">
-                Don’t have an account? Sign Up
-              </a>
+              <Link to="/signup" className="text-primary text-decoration-none">
+                Don't have an account? Sign Up
+              </Link>
+
             </div>
           </form>
         </div>

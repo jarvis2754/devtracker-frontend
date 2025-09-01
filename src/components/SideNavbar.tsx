@@ -25,7 +25,7 @@ function SideNavbar() {
   ];
   return (
     <div className="floating-navbar">
-      <ul className="list-unstyled bg-light  shadow  rounded m-3 d-inline-flex flex-row flex-md-column gap-md-4">
+      <ul className="list-unstyled bg-light  shadow  rounded m-3 d-inline-flex flex-row flex-md-column gap-md-2">
         {navlinks.map((link) => (
           <li
             key={link.path}
