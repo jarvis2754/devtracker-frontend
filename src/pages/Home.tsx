@@ -1,54 +1,38 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Todo from "../components/Todo";
+import type { Project } from "../types/ProjectTypes";
 
 const Home: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const project = [
-    {
-      projectId: 1,
-      projectName: "Project Alpha",
-      projectDesc: "A project to improve the user interface.",
-      teamLead: "Alice Johnson",
-      createdAt: new Date("2023-01-01"),
-      deadLine: new Date("2023-12-31"),
-      createdBy: "Alice Johnson",
-      status: "In Progress",
-      teamMembers: [
-        { id: 1, name: "Bob Smith", role: "Developer" },
-        { id: 2, name: "Charlie Brown", role: "Designer" },
-      ],
-    },
-    {
-      projectId: 2,
-      projectName: "Project Beta",
-      projectDesc: "A project to enhance the backend services.",
-      teamLead: "Bob Smith",
-      createdAt: new Date("2023-02-01"),
-      deadLine: new Date("2023-12-31"),
-      createdBy: "Alice Johnson",
-      status: "In Progress",
-      teamMembers: [
-        { id: 1, name: "Bob Smith", role: "Developer" },
-        { id: 2, name: "Charlie Brown", role: "Designer" },
-      ],
-    },
-    {
-      projectId: 3,
-      projectName: "Project Gamma",
-      projectDesc: "A project to improve the user interface.",
-      teamLead: "Alice Johnson",
-      createdAt: new Date("2023-01-01"),
-      deadLine: new Date("2023-12-31"),
-      createdBy: "Alice Johnson",
-      status: "In Progress",
-      teamMembers: [
-        { id: 1, name: "Bob Smith", role: "Developer" },
-        { id: 2, name: "Charlie Brown", role: "Designer" },
-      ],
-    },
-    
-  ];
+  const [project, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/project/all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // if secured with JWT token
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+        return res.json();
+      })
+      .then((data: Project[]) => {
+        setProjects(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching projects:", error);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <p>Loading projects...</p>;
   return (
     <section
       className="container d-flex justify-content-center flex-column "
@@ -56,7 +40,7 @@ const Home: React.FC = () => {
     >
       <div
         className="container row m-auto"
-        style={{ width: "85%", height: "60%" }}
+        style={{ width: "85%", height: "200px" }}
       >
         <div className="col-12 col-md-6 col-lg-4 p-2">
           <div className="bg-light card shadow border-dark p-3 w-100 h-100">
