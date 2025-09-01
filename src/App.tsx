@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import {  Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import './App.css'
 import Signup from './pages/auth/Signup'
 import SideNavbar from './components/SideNavbar'
+import Login from './pages/auth/Login'
 
 function App() {
   const location = useLocation();
@@ -20,7 +21,7 @@ function App() {
         <Route path="/tasks" element={<Home />} />
         <Route path="/members" element={<Home />} />
         <Route path="/settings" element={<Home />} />
-        <Route path="/login" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </>
