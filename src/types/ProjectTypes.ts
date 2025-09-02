@@ -6,7 +6,7 @@ export interface TeamMember {
 }
 
 export interface Project {
-  projectId?: number; // backend will assign
+  projectId: number; // backend will assign
   projectName: string;
   projectDesc: string;
   teamLead: string;

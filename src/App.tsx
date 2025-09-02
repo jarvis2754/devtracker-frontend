@@ -33,12 +33,13 @@ function App() {
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/messages" element={<ProtectedRoute><Home /></ProtectedRoute>} />
 
-        <Route path="/projects/:id" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
-          <Route index element={<ProtectedRoute><Summary /></ProtectedRoute>} />
-          <Route path="listTasks" element={<ProtectedRoute><ListTasks /></ProtectedRoute>} />
-          <Route path="board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
-          <Route path="activities" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
+        <Route path="/projects" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
+          <Route path=":id" element={<ProtectedRoute><Summary /></ProtectedRoute>} />
+          <Route path=":id/listTasks" element={<ProtectedRoute><ListTasks /></ProtectedRoute>} />
+          <Route path=":id/board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
+          <Route path=":id/activities" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
         </Route>
+
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
       </Routes>
