@@ -4,6 +4,7 @@ import type { Project } from "../types/ProjectTypes";
 import ProjectDetails from "./ProjectDetails";
 import axios from "axios";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ProjectContext = createContext<Project | null>(null);
 
 export default function ProjectLayout() {

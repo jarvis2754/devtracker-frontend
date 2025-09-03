@@ -13,6 +13,7 @@ import ListTasks from './pages/ListTasks'
 import ProjectLayout from './pages/ProjectLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Settings from './pages/Settings'
+import NoContent from './pages/NoContent'
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/projects" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
           <Route path=":id" element={<ProtectedRoute><Summary /></ProtectedRoute>} />
           <Route path=":id/listTasks" element={<ProtectedRoute><ListTasks /></ProtectedRoute>} />
+          <Route path=":id/no-content" element={<ProtectedRoute><NoContent /></ProtectedRoute>} />
           <Route path=":id/board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
           <Route path=":id/activities" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
         </Route>
