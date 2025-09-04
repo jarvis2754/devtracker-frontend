@@ -1,27 +1,13 @@
 import { Draggable } from "@hello-pangea/dnd";
-
-export interface Todo {
-  id: number;
-  title: string;
-  description?: string;
-  priority: "CRITICAL" | "MEDIUM" | "HIGH" | "LOW" | "COMPLETED";
-  status: "TODO" | "IN_PROGRESS" |"AWAIT_APPROVAL"| "COMPLETED";
-  type:'BUG'|'DOCUMENTATION'|'FEATURE'|'IMPROVEMENT'|'OTHERS'|'PERFORMANCE'|'SECURITY'|'TASK'|'UI'|'UX'
-  createdAt: string;
-  comments: number[];
-  assignerId: number,
-  projectId: number,
-  reporterId: number,
-}
+import type { Issue } from "../types/IssueTypes";
           
        
 interface CardItemProps {
-  todo: Todo;
+  todo: Issue;
   index: number;
 }
 
 const CardItem: React.FC<CardItemProps> = ({ todo, index }) => {
-
   const priorityColor =(status:string,priority:string)=>{
 
     if(status==="COMPLETED"){
@@ -60,10 +46,12 @@ const CardItem: React.FC<CardItemProps> = ({ todo, index }) => {
             </header>
 
             <main className="mb-3">
-              <h6 className="card-title clamp-title fw-bold">{todo.title}</h6>
+              <div>
+              <h6 className="card-title clamp-title fw-bold"style={{fontSize: "16px"}}>{todo.title}</h6>
               {todo.description && (
-                <p className="card-text text-muted clamp-description">{todo.description}</p>
+                <p className="card-text text-muted clamp-description" style={{fontSize: "14px"}}>{todo.description}</p>
               )}
+              </div>
             </main>
 
             <footer className="d-flex justify-content-between align-items-center flex-wrap gap-2">

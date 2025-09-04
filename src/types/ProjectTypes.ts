@@ -9,12 +9,10 @@ export interface Project {
   projectId: number; // backend will assign
   projectName: string;
   projectDesc: string;
-  teamLead: string;
+  teamLeadId: string;
   createdAt?: string; // backend will assign
-  deadLine: string;
-  createdBy?: string;
+  deadline: string;
+  createdById?: string;
   status: string;
   teamMembers: TeamMember[];
-
-
 }

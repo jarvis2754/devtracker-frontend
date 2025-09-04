@@ -1,177 +1,158 @@
 import React, { useEffect, useState } from "react";
-import type {Issue} from "../types/IssueTypes"
+import type { Issue } from "../types/IssueTypes";
 import { useParams } from "react-router-dom";
-
-
-// const issues: Issue[] = [
-//   {
-//     id: 1,
-//     title: "field feature",
-//     description: "implement this feature",
-//     type: "BUG",
-//     status: "ACTIVE",
-//     priority: "CRITICAL",
-//     assignerId: 1,
-//     projectId: 1,
-//     reporterId: 1,
-//     comments: [],
-//     createdAt: "2025-08-31T07:54:44.965+00:00",
-//   },
-//   {
-//     id: 2,
-//     title: "login error",
-//     description: "fix login issue",
-//     type: "BUG",
-//     status: "ACTIVE",
-//     priority: "CRITICAL",
-//     assignerId: 2,
-//     projectId: 1,
-//     reporterId: 2,
-//     comments: [],
-//     createdAt: "2025-08-31T08:20:00.000+00:00",
-//   },
-//   {
-//     id: 3,
-//     title: "UI bug",
-//     description: "fix dashboard color mismatch",
-//     type: "BUG",
-//     status: "ACTIVE",
-//     priority: "CRITICAL",
-//     assignerId: 3,
-//     projectId: 1,
-//     reporterId: 3,
-//     comments: [],
-//     createdAt: "2025-08-31T09:10:00.000+00:00",
-//   },
-//   {
-//     id: 4,
-//     title: "API bug",
-//     description: "backend API response issue",
-//     type: "BUG",
-//     status: "ACTIVE",
-//     priority: "CRITICAL",
-//     assignerId: 4,
-//     projectId: 1,
-//     reporterId: 4,
-//     comments: [],
-//     createdAt: "2025-08-31T10:00:00.000+00:00",
-//   },
-//   {
-//     id: 5,
-//     title: "database bug",
-//     description: "migration issue in MySQL 8",
-//     type: "BUG",
-//     status: "ACTIVE",
-//     priority: "CRITICAL",
-//     assignerId: 5,
-//     projectId: 1,
-//     reporterId: 5,
-//     comments: [],
-//     createdAt: "2025-08-31T10:30:00.000+00:00",
-//   },
-//   {
-//     id: 6,
-//     title: "report bug",
-//     description: "PDF export not working",
-//     type: "BUG",
-//     status: "ACTIVE",
-//     priority: "CRITICAL",
-//     assignerId: 6,
-//     projectId: 1,
-//     reporterId: 6,
-//     comments: [],
-//     createdAt: "2025-08-31T11:15:00.000+00:00",
-//   },
-// ];
+import NoContent from "./NoContent";
+import { Plus } from "lucide-react";
+import AddTask from "../components/AddTask";
 
 const ListTasks: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-    const [tasks, setTasks] = useState<Issue[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [tasks, setTasks] = useState<Issue[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    useEffect(() => {
-        if (!id) return;
+  const handleTaskAdded = (newIssue: Issue) => {
+    setTasks([...tasks, newIssue]); // add the new task to the state
+  };
 
-        const fetchTask = async () => {
-            try {
-                const res = await fetch(`http://localhost:8080/task/all/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
+  useEffect(() => {
+    if (!id) return;
 
-                if (!res.ok) throw new Error("Failed to fetch Task");
+    const fetchTask = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/task/all/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
-                const data: Issue = await res.json();
-                setTasks(data);
-            } catch (err: any) {
-                console.error(err);
-                setError(err.message || "Something went wrong");
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (!res.ok) throw new Error("Failed to fetch Task");
 
-        fetchTask();
-    }, [id]);
+        const data: Issue[] = await res.json();
+        setTasks(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error(err);
+          setError("Something went wrong");
+        } else {
+          setError("Something went wrong");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (loading) return <p>Loading project...</p>;
-    if (error) return <p>Error: {error}</p>;
-    if (!tasks) return <p>No project found.</p>;
+    fetchTask();
+  }, [id]);
+
+  const priorityColor = (priority: string) => {
+    if (priority === "LOW") {
+      return "bg-primary"
+
+    } else if (priority === "MEDIUM") {
+      return "bg-info"
+
+    } else if (priority === "HIGH") {
+      return "bg-warning"
+    } else {
+      return "bg-danger"
+    }
+  }
+  const listColor = (status:string) => {
+    if (status === "TODO") return "bg-primary";
+    else if ((status === "IN_PROGRESS")) return "bg-warning";
+    else if (status === "AWAIT_APPROVAL") return "bg-info";
+    else return "bg-success";
+  }
+
   return (
-    <div className="p-3 bg-light min-vh-100">
-      <ul className="list-unstyled">
-        {tasks.map((task) => {
-          const date = new Date(task.createdAt);
-          const day = date.getDate();
-          const month = date.getMonth() + 1;
-          const year = date.getFullYear();
-          const formattedDate = `${day}-${month}-${year}`;
+    <div className="p-3 card bg-light min-vh-50 ">
+      <div className="d-flex mx-2 justify-content-between">
+        <div>
+          <h2 className="text-secondary">Tasks</h2>
+        </div>
+        <div className="d-flex">
+          <button
+            className="btn btn-primary d-flex align-items-center rounded-pill"
+            onClick={() => setShowPopup(true)}
+          >
+            <Plus size={16} className="me-md-2" />
+            <span className="d-none d-md-block">Add Task</span>
+          </button>
+        </div>
+      </div>
+      <div className="inner-content mt-3">
+        {loading ? (
+          <p>Loading project...</p>
+        ) : error ? (
+          <NoContent />
+        ) : !tasks ? (
+          <NoContent />
+        ) : (
+          <ul className="list-unstyled">
+            {tasks.map((task) => {
+              const date = new Date(task.createdAt);
+              const day = date.getDate();
+              const month = date.getMonth() + 1;
+              const year = date.getFullYear();
+              const formattedDate = `${day}-${month}-${year}`;
 
-          return (
-            <li key={task.id} className="task-card px-4 py-3 mb-3">
-              <div className="row align-items-center">
-                <div className="col-12 col-md-10">
-                  <div className="d-flex justify-content-between">
-                    <p className="fs-5 fw-semibold text-dark mb-1">
-                      <span className="text-danger">[{task.type}]</span> {task.title}
-                    </p>
-                    <small className="text-muted">
-                      By: <i>{task.assignerId}</i>
-                    </small>
-                  </div>
+              return (
+                <li key={task.id} className="task-card px-4 py-3 mb-3">
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-10">
+                      <div className="d-flex justify-content-between">
+                        <p className="fs-5 fw-semibold text-dark mb-1">
+                          <span className="text-danger">[{task.type}]</span>{" "}
+                          {task.title}
+                        </p>
+                        <small className="text-muted">
+                          By: <i>{task.assignerId}</i>
+                        </small>
+                      </div>
 
-                  <div className="d-flex flex-wrap align-items-center text-secondary">
-                    <span className="me-3 fw-bold text-primary">#{task.id}</span>
+                      <div className="d-flex flex-wrap align-items-center text-secondary">
+                        <span className="me-3 fw-bold text-primary">
+                          #{task.id}
+                        </span>
 
-                    <span className="me-3">
-                      <span className="badge rounded-pill px-3 py-2 fw-bold shadow-sm bg-success text-white">
-                        {task.status}
+                        <span className="me-3">
+                          <span className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${listColor(task.status)}`}>
+                            {task.status}
+                          </span>
+                        </span>
+
+                        <span className="me-3">
+                          <i>Opened: {formattedDate}</i>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-2 d-flex justify-content-md-end mt-2 mt-md-0">
+                      <span
+                        className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${priorityColor(task.priority)}`}
+                        style={{ fontSize: "0.85rem" }}
+                      >
+                        {task.priority}
                       </span>
-                    </span>
-
-                    <span className="me-3">
-                      <i>Opened: {formattedDate}</i>
-                    </span>
+                    </div>
                   </div>
-                </div>
-
-                <div className="col-12 col-md-2 d-flex justify-content-md-end mt-2 mt-md-0">
-                  <span
-                    className="badge rounded-pill px-3 py-2 fw-bold shadow-sm bg-danger text-white"
-                    style={{ fontSize: "0.85rem" }}
-                  >
-                    {task.priority}
-                  </span>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+      {showPopup && (
+        <AddTask
+          onClose={() => setShowPopup(false)}
+          onTaskAdded={handleTaskAdded}
+          projectId={Number(id)}
+        />
+      )}
 
       <style>{`
         .task-card {

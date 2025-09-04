@@ -1,8 +1,12 @@
-import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 interface ProtectedRouteProps {
-  children: ReactNode;
+  children: React.ReactNode;
+}
+
+interface TokenPayload {
+  exp: number; 
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
@@ -12,5 +16,19 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
+  try {
+    const decoded: TokenPayload = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+
+    if (decoded.exp < currentTime) {
+      // Token expired
+      localStorage.removeItem("token");
+      return <Navigate to="/login" replace />;
+    }
+  } catch (error) {
+    // Invalid token
+    localStorage.removeItem("token");
+    return <Navigate to="/login" replace />;
+  }
   return <>{children}</>;
 }

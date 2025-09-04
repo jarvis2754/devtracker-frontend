@@ -4,6 +4,7 @@ import type { Project } from "../types/ProjectTypes";
 import ProjectDetails from "./ProjectDetails";
 import axios from "axios";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ProjectContext = createContext<Project | null>(null);
 
 export default function ProjectLayout() {
@@ -93,7 +94,7 @@ export default function ProjectLayout() {
       >
         <div
           className="container m-auto"
-          style={{ width: "85%", height: "70%" }}
+          style={{ width: "90%", height: "70%" }}
         >
           <h1>Project</h1>
           <ProjectDetails />
