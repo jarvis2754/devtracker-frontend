@@ -17,11 +17,21 @@ export default function Login() {
       });
       localStorage.setItem("token", response.data.token);
       navigate("/");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login failed:", err);
-      alert("Invalid credentials!");
+
+      // Check if backend sent a message
+      if (err.response && err.response.data && err.response.data.message) {
+        alert(err.response.data.message);
+      } else if (err.message) {
+        // Network / Axios related error
+        alert(`Error: ${err.message}`);
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     }
   };
+
 
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex justify-content-center align-items-center">

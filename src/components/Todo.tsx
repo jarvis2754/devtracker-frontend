@@ -12,7 +12,7 @@ interface TodoProps {
 const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
   const [projectName, setProjectName] = useState("");
   const [projectDesc, setProjectDesc] = useState("");
-  const [teamLead, setTeamLead] = useState("");
+  const [teamLeadId, setTeamLeadId] = useState("");
   const [deadline, setDeadline] = useState("");
 
   const [teams, setTeams] = useState<TeamMember[]>([]);
@@ -24,7 +24,14 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
   const today = new Date().toISOString().split("T")[0];
 
   const addTeam = () => {
-    if (teamText.trim() && teamRole.trim()) {
+    // if (teamText.trim() && teamRole.trim()) {
+    //   const newMember: TeamMember = { name: teamText.trim(), role: teamRole.trim() };
+    //   setTeams([...teams, newMember]);
+    //   setTeamText("");
+    //   setTeamRole("");
+    //   setShowTeamInput(false);
+    // }
+    if (teamText.trim()) {
       const newMember: TeamMember = { name: teamText.trim(), role: teamRole.trim() };
       setTeams([...teams, newMember]);
       setTeamText("");
@@ -34,16 +41,17 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
   };
 
   const handleSubmit = async () => {
-    if (!projectName || !teamLead || !deadline) {
+    if (!projectName || !teamLeadId || !deadline) {
       alert("Please fill Project Name, Team Lead, and Deadline.");
       return;
     }
 
     const newProject: Project = {
+      projectId: 0, // temporary, will be replaced by backend
       projectName,
       projectDesc,
-      teamLead,
-      deadLine: deadline,
+      teamLeadId,
+      deadline: deadline,
       status: "ACTIVE",
       teamMembers: teams,
     };
@@ -60,9 +68,9 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
         projectId: response.data.projectId, // must exist in backend response
         projectName: response.data.projectName || projectName,
         projectDesc: response.data.projectDesc || projectDesc,
-        teamLead: response.data.teamLead || teamLead,
+        teamLeadId: response.data.teamLeadId || teamLeadId,
         status: response.data.status || "ACTIVE",
-        deadLine: response.data.deadLine || deadline,
+        deadline: response.data.deadline || deadline,
         teamMembers: response.data.teamMembers || teams,
       };
       onProjectAdded(addedProject);
@@ -96,12 +104,12 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
 
         <div className="mb-3 d-flex align-items-center">
           <label className="form-label fw-bold me-0.3" style={{ width: "150px" }}>Project Desc</label>
-          <input type="text" className="form-control rounded-pill" value={projectDesc} onChange={(e) => setProjectDesc(e.target.value)} />
+          <textarea className="w-100 border rounded" value={projectDesc} onChange={(e) => setProjectDesc(e.target.value)}/>
         </div>
 
         <div className="mb-3 d-flex align-items-center">
           <label className="form-label fw-bold me-3" style={{ width: "120px" }}>Team Lead</label>
-          <input type="text" className="form-control rounded-pill" value={teamLead} onChange={(e) => setTeamLead(e.target.value)} />
+          <input type="text" className="form-control rounded-pill" value={teamLeadId} onChange={(e) => setTeamLeadId(e.target.value)} />
         </div>
 
         <div className="mb-3 d-flex align-items-center">
@@ -116,7 +124,7 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
           {showTeamInput && (
             <div className="d-flex gap-2 mt-2 ms-5">
               <input type="text" className="form-control rounded-pill" placeholder="Member name" value={teamText} onChange={(e) => setTeamText(e.target.value)} />
-              <input type="text" className="form-control rounded-pill" placeholder="Role" value={teamRole} onChange={(e) => setTeamRole(e.target.value)} />
+              {/* <input type="text" className="form-control rounded-pill" placeholder="Role" value={teamRole} onChange={(e) => setTeamRole(e.target.value)} /> */}
               <button className="btn btn-primary rounded-pill" onClick={addTeam}>Add</button>
             </div>
           )}

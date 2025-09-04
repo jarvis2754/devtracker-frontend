@@ -94,7 +94,7 @@ export default function ProjectLayout() {
       >
         <div
           className="container m-auto"
-          style={{ width: "85%", height: "70%" }}
+          style={{ width: "90%", height: "70%" }}
         >
           <h1>Project</h1>
           <ProjectDetails />

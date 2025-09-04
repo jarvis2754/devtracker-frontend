@@ -7,6 +7,7 @@ export default function Signup() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [position, setPosition] = useState<string>("");
+  const [uuId ,setuuId] =useState<string>("");
 
   const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ export default function Signup() {
       // Call your Spring Boot signup endpoint
       await axios.post("http://localhost:8080/api/auth/signup", {
         userName,
+        uuId,
         email,
         password,
         position,
@@ -48,6 +50,16 @@ export default function Signup() {
                 placeholder="Full Name"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control form-control-lg rounded-3"
+                placeholder="User Id"
+                value={uuId}
+                onChange={(e) => setuuId(e.target.value)}
                 required
               />
             </div>

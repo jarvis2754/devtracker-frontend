@@ -46,7 +46,8 @@ li {
   bottom: -15px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1030; /* higher than Bootstrap navbar */
+  z-index: 1030;
+  /* higher than Bootstrap navbar */
 }
 
 /* Medium and above */
@@ -60,7 +61,7 @@ li {
 }
 
 
-.custom-navbar{
+.custom-navbar {
   z-index: 1100 !important;
 }
 
@@ -78,6 +79,9 @@ li {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
+  /* important for long words */
+  max-width: 100%;
 }
 
 .clamp-description {
@@ -87,12 +91,28 @@ li {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
+  /* important for long words */
+  max-width: 100%;
 }
 
 .card {
   display: flex;
   flex-wrap: wrap;
 }
+
+.custom-card {
+  display: flex;
+  flex-wrap: wrap;
+  transition: transform 0.5s ease-in-out;
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+
+
+}
+
 
 .signup-card {
   background: #fff;

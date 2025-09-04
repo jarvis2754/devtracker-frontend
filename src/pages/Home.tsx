@@ -48,40 +48,60 @@ const Home: React.FC = () => {
         className="container row m-auto"
         style={{ width: "85%", height: "55%" }}
       >
-        <div className="col-12 col-md-6 col-lg-4 p-2">
-          <div className="bg-light card shadow border-dark p-3 w-100 h-100">
-            <h4>Create</h4>
-            <p>Click add to create your project</p>
-
-            <div className="d-flex justify-content-center mt-3">
-              <button
-                className="btn btn-primary  rounded-pill"
-                onClick={() => setShowPopup(true)}
-              >
-                <Plus size={20} className="me-2" /> Add Project
-              </button>
+        <div className="col-12 col-md-6 col-lg-4 p-2" style={{height:"250px"}}>
+          <div
+            className="custom-card border-0 shadow rounded-4 h-100"
+            style={{ background: "#f5faff" }}
+          >
+            <div className="card-body d-flex flex-column">
+              <div>
+                <h5 className="text-primary fw-bold">Create Project</h5>
+                <p className="text-muted">Click add to create your project</p>
+              </div>
+              <div className="text-center mt-3">
+                <button
+                  className="btn btn-primary rounded-pill px-4"
+                  onClick={() => setShowPopup(true)}
+                >
+                  <Plus size={20} className="me-2" />
+                  Add Project
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
         {project.map((proj) => (
 
-          <div key={proj.projectId} className="col-12 col-md-6 col-lg-4 p-2">
-            <Link to={`/projects/${proj.projectId}`} className="text-primary text-decoration-none">
-              <div className="bg-light card shadow border-0 p-3 w-100 h-100">
-                <h5 className="clamp-title">{proj.projectName}</h5>
-                <p className="clamp-description">{proj.projectDesc}</p>
-                <p>
-                  <strong>Team Lead:</strong> {proj.teamLead}
-                </p>
-                <p>
-                  <strong>Status:</strong> {proj.status}
-                </p>
-                <p>
-                  <strong>Deadline:</strong> {proj.deadLine}
-                </p>
+          <div key={proj.projectId} className="col-12 col-md-6 col-lg-4 p-2" style={{height:"250px"}}>
+            <Link to={`/projects/${proj.projectId}`} className="text-decoration-none">
+              <div
+                className="custom-card border-0 shadow rounded-4 h-100"
+                style={{ background: "#ffffff", borderLeft: "5px solid #0d6efd" }}
+              >
+                <div className="card-body d-flex flex-column">
+                  <h5 className="text-primary fw-bold mb-2 clamp-title">{proj.projectName}</h5>
+                  <p className="text-secondary mb-3 clamp-description">{proj.projectDesc}</p>
+                  <p className="my-1">
+                    <strong>Team Lead:</strong> {proj.teamLeadId}
+                  </p>
+                  <p className="my-1">
+                    <strong>Status:</strong>{" "}
+                    <span
+                      className={`badge rounded-pill ${proj.status === "ACTIVE" ? "bg-success" : "bg-secondary"
+                        }`}
+                    >
+                      {proj.status}
+                    </span>
+                  </p>
+                  <p className="my-1">
+                    <strong>Deadline:</strong> {proj.deadline ? proj.deadline.substring(0, 10) : "None"}
+                  </p>
+                </div>
               </div>
             </Link>
           </div>
+
 
 
 

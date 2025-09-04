@@ -1,22 +1,29 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { X } from "lucide-react";
+import "../App.css";
 import type { Issue } from "../types/IssueTypes";
 
 interface AddTaskProps {
   onClose: () => void;
   onTaskAdded: (newTask: Issue) => void;
+  projectId: number; // ✅ passed from parent
 }
 
-const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded }) => {
+const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("TASK");
   const [status, setStatus] = useState("TODO");
   const [priority, setPriority] = useState("MEDIUM");
-  const [projectId, setProjectId] = useState<number | "">("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!title) {
+      alert("Please fill Title.");
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -27,7 +34,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded }) => {
           type,
           status,
           priority,
-          projectId: Number(projectId),
+          projectId, // ✅ comes from props now
         },
         {
           headers: {
@@ -38,116 +45,144 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded }) => {
       );
 
       if (response.status === 201) {
-        // ✅ response.data is just a string, not JSON
-        console.log("✅ Task added:", response.data);
+        const data = response.data;
 
-        // Instead of passing the string, trigger a refresh
+        // ✅ Use backend ID instead of random temp ID
         onTaskAdded({
-          id: Date.now(), // temporary id
-          title,
-          description,
-          type,
-          status,
-          priority,
-          projectId: Number(projectId),
-          assignerId: 0,
-          reporterId: 0,
-          createdAt: new Date().toISOString(),
-          comments: [],
+          id: data.id,
+          title: data.title || title,
+          description: data.description || description,
+          type: data.type || type,
+          status: data.status || status,
+          priority: data.priority || priority,
+          projectId,
+          assignerId: data.assignerId || 0,
+          reporterId: data.reporterId || 0,
+          createdAt: data.createdAt || new Date().toISOString(),
+          comments: data.comments || [],
         });
+
+        onClose();
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("❌ Error adding task:", err);
-      alert("Failed to add task. Please try again.");
+
+      if (err.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("Failed to add task. Please try again.");
+      }
     }
   };
 
   return (
-    <div className="card p-3 mb-3">
-      <h4>Add New Task</h4>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-2">
-          <label>Title</label>
-          <input
-            type="text"
-            className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-2">
-          <label>Description</label>
-          <textarea
-            className="form-control"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-2">
-          <label>Type</label>
-          <select
-            className="form-control"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <option value="BUG">Bug</option>
-            <option value="FEATURE">Feature</option>
-            <option value="TASK">Task</option>
-            <option value="IMPROVEMENT">Improvement</option>
-          </select>
-        </div>
-
-        <div className="mb-2">
-          <label>Status</label>
-          <select
-            className="form-control"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="TODO">To Do</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="AWAIT_APPROVAL">Await Approval</option>
-          </select>
-        </div>
-
-        <div className="mb-2">
-          <label>Priority</label>
-          <select
-            className="form-control"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-          >
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-            <option value="CRITICAL">Critical</option>
-          </select>
-        </div>
-
-        <div className="mb-2">
-          <label>Project ID</label>
-          <input
-            type="number"
-            className="form-control"
-            value={projectId}
-            onChange={(e) =>
-              setProjectId(e.target.value ? Number(e.target.value) : "")
-            }
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-success me-2">
-          Add Task
+    <div className="popup-overlay">
+      <div
+        className="card p-4 shadow-sm position-relative"
+        style={{ width: "500px", margin: "0 auto" }}
+      >
+        {/* Close button */}
+        <button
+          className="btn-style bg-danger border-0 text-light p-0.8 px-1 position-absolute top-0 end-0"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <X size={20} />
         </button>
-        <button type="button" className="btn btn-secondary" onClick={onClose}>
-          Cancel
-        </button>
-      </form>
+
+        {/* Title */}
+        <h4 className="text-center mb-3">Add New Task</h4>
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3 d-flex align-items-center">
+            <label className="form-label fw-bold me-3" style={{ width: "120px" }}>
+              Title
+            </label>
+            <input
+              type="text"
+              className="form-control rounded-pill"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <label className="form-label fw-bold me-3" style={{ width: "120px" }}>
+              Description
+            </label>
+            <input
+              type="text"
+              className="form-control rounded-pill"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <label className="form-label fw-bold me-3" style={{ width: "120px" }}>
+              Type
+            </label>
+            <select
+              className="form-control rounded-pill"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option value="BUG">Bug</option>
+              <option value="FEATURE">Feature</option>
+              <option value="TASK">Task</option>
+              <option value="IMPROVEMENT">Improvement</option>
+            </select>
+          </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <label className="form-label fw-bold me-3" style={{ width: "120px" }}>
+              Status
+            </label>
+            <select
+              className="form-control rounded-pill"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="TODO">To Do</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="AWAIT_APPROVAL">Await Approval</option>
+            </select>
+          </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <label className="form-label fw-bold me-3" style={{ width: "120px" }}>
+              Priority
+            </label>
+            <select
+              className="form-control rounded-pill"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+            >
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+              <option value="CRITICAL">Critical</option>
+            </select>
+          </div>
+
+          {/* ✅ Project ID field removed, since it's passed via props */}
+
+          <div className="text-center">
+            <button type="submit" className="btn btn-success rounded-pill px-4 me-2">
+              Add Task
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary rounded-pill px-4"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

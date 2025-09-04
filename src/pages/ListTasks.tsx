@@ -13,8 +13,8 @@ const ListTasks: React.FC = () => {
   const [error, setError] = useState("");
 
   const handleTaskAdded = (newIssue: Issue) => {
-      setTasks([...tasks, newIssue]); // add the new task to the state
-    };
+    setTasks([...tasks, newIssue]); // add the new task to the state
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -48,19 +48,39 @@ const ListTasks: React.FC = () => {
     fetchTask();
   }, [id]);
 
+  const priorityColor = (priority: string) => {
+    if (priority === "LOW") {
+      return "bg-primary"
+
+    } else if (priority === "MEDIUM") {
+      return "bg-info"
+
+    } else if (priority === "HIGH") {
+      return "bg-warning"
+    } else {
+      return "bg-danger"
+    }
+  }
+  const listColor = (status:string) => {
+    if (status === "TODO") return "bg-primary";
+    else if ((status === "IN_PROGRESS")) return "bg-warning";
+    else if (status === "AWAIT_APPROVAL") return "bg-info";
+    else return "bg-success";
+  }
+
   return (
-    <div className="p-3 bg-light min-vh-50 border">
+    <div className="p-3 card bg-light min-vh-50 ">
       <div className="d-flex mx-2 justify-content-between">
         <div>
           <h2 className="text-secondary">Tasks</h2>
         </div>
         <div className="d-flex">
           <button
-                className="btn btn-primary d-flex align-items-center rounded-pill"
-                onClick={() => setShowPopup(true)}
-              >
-          <Plus size={16} className="me-md-2" />
-          <span className="d-none d-md-block">Add Task</span>
+            className="btn btn-primary d-flex align-items-center rounded-pill"
+            onClick={() => setShowPopup(true)}
+          >
+            <Plus size={16} className="me-md-2" />
+            <span className="d-none d-md-block">Add Task</span>
           </button>
         </div>
       </div>
@@ -100,7 +120,7 @@ const ListTasks: React.FC = () => {
                         </span>
 
                         <span className="me-3">
-                          <span className="badge rounded-pill px-3 py-2 fw-bold shadow-sm bg-success text-white">
+                          <span className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${listColor(task.status)}`}>
                             {task.status}
                           </span>
                         </span>
@@ -113,7 +133,7 @@ const ListTasks: React.FC = () => {
 
                     <div className="col-12 col-md-2 d-flex justify-content-md-end mt-2 mt-md-0">
                       <span
-                        className="badge rounded-pill px-3 py-2 fw-bold shadow-sm bg-danger text-white"
+                        className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${priorityColor(task.priority)}`}
                         style={{ fontSize: "0.85rem" }}
                       >
                         {task.priority}
@@ -130,6 +150,7 @@ const ListTasks: React.FC = () => {
         <AddTask
           onClose={() => setShowPopup(false)}
           onTaskAdded={handleTaskAdded}
+          projectId={Number(id)}
         />
       )}
 
