@@ -1,8 +1,11 @@
 // types/Project.ts
 export interface TeamMember {
-  id?: number; // backend will assign
-  name: string;
-  role: string;
+  uuid: string; // backend will assign
+  userName?: string;
+  position?: string;
+  email?: string;
+  userId?: number;
+
 }
 
 export interface Project {
@@ -14,5 +17,5 @@ export interface Project {
   deadline: string;
   createdById?: string;
   status: string;
-  teamMembers: TeamMember[];
+  teamMemberIds: string[];
 }

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { ProjectContext } from "./ProjectLayout";
+import type { TeamMember } from "../types/ProjectTypes";
 
 const Summary: React.FC = () => {
   const project = useContext(ProjectContext);
@@ -86,18 +87,22 @@ const Summary: React.FC = () => {
             <table className="table table-hover mb-0 align-middle">
               <thead className="table-primary">
                 <tr>
-                  <th scope="col">ID</th>
+                  <th scope="col">S.No</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">User ID</th>
                   <th scope="col">Member Name</th>
                   <th scope="col">Role</th>
                 </tr>
               </thead>
               <tbody>
-                {project.teamMembers?.length ? (
-                  project.teamMembers.map((member: any, index: number) => (
+                {project.teamMemberIds?.length ? (
+                  project.teamMemberIds.map((member: unknown, index: number) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{member.name}</td>
-                      <td>{member.role}</td>
+                      <td>{(member as TeamMember).email}</td>
+                      <td>{(member as TeamMember).uuid}</td>
+                      <td>{(member as TeamMember).userName}</td>
+                      <td>{(member as TeamMember).position}</td>
                     </tr>
                   ))
                 ) : (
