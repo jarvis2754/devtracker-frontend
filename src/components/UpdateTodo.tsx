@@ -2,33 +2,41 @@ import { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 import "../App.css";
-import type { ProjectRequest, ProjectResponse, TeamMember } from "../types/ProjectTypes";
+import type { ProjectRequest, ProjectResponse,TeamMember } from "../types/ProjectTypes";
 
 interface TodoProps {
   onClose: () => void;
-  onProjectAdded: (project: ProjectResponse) => void;
+  onProjectUpdated: (project: ProjectResponse) => void;
+  project: ProjectResponse;
 }
+const UpdateTodo: React.FC<TodoProps> = ({
+  onClose,
+  onProjectUpdated,
+  project,
+}) => {
+  const [projectName, setProjectName] = useState(project.projectName);
+  const [projectDesc, setProjectDesc] = useState(project.projectDesc);
+  const [teamLeadId, setTeamLeadId] = useState((project.teamLeadId as TeamMember).uuid);
+  const [deadline, setDeadline] = useState(
+    project.deadline ? project.deadline.substring(0, 10) : ""
+  );
 
-const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
-  const [projectName, setProjectName] = useState("");
-  const [projectDesc, setProjectDesc] = useState("");
-  const [teamLeadId, setTeamLeadId] = useState("");
-  const [deadline, setDeadline] = useState("");
-
-  const [teams, setTeams] = useState<TeamMember[]>([]);
+  const [teams, setTeams] = useState<string[]>(project.teamMemberIds.map(member=>member.uuid) || []);
   const [showTeamInput, setShowTeamInput] = useState(false);
   const [teamUuid, setTeamUuid] = useState("");
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Add team member (UUID only)
   const addTeam = () => {
-    if (teamUuid.trim()) {
-      const newMember: TeamMember = { uuid: teamUuid.trim() };
-      setTeams([...teams, newMember]);
+    if (teamUuid.trim() && !teams.includes(teamUuid.trim())) {
+      setTeams([...teams, teamUuid.trim()]);
       setTeamUuid("");
       setShowTeamInput(false);
     }
+  };
+
+  const removeTeam = (index: number) => {
+    setTeams(teams.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async () => {
@@ -45,12 +53,12 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
       deadline,
       status: "ACTIVE",
       // ✅ map to UUID strings only
-      teamMemberIds: teams.map((t) => t.uuid),
+      teamMemberIds: teams,
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/project/add",
+      const response = await axios.put<ProjectResponse>(
+        `http://localhost:8080/project/update/${project.projectId}`,
         newProject,
         {
           headers: {
@@ -60,22 +68,21 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
         }
       );
 
-      const addedProject: ProjectResponse = {
+      const updatedProject: ProjectResponse = {
         projectId: response.data.projectId,
         projectName: response.data.projectName || projectName,
         projectDesc: response.data.projectDesc || projectDesc,
         teamLeadId: response.data.teamLeadId || teamLeadId,
         status: response.data.status || "ACTIVE",
         deadline: response.data.deadline || deadline,
-        // ✅ backend should also return UUID array
-        teamMemberIds: response.data.teamMemberIds || teams.map((t) => t.uuid),
+        teamMemberIds: response.data.teamMemberIds || teams,
       };
 
-      onProjectAdded(addedProject);
+      onProjectUpdated(updatedProject);
       onClose();
     } catch (error) {
-      console.error("❌ Error creating project:", error);
-      alert("Failed to create project.");
+      console.error("Error updating project:", error);
+      alert("Failed to update project.");
     }
   };
 
@@ -133,7 +140,7 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
           <input
             type="text"
             className="form-control rounded-pill"
-            value={teamLeadId}
+            value={teamLeadId as string}
             onChange={(e) => setTeamLeadId(e.target.value)}
           />
         </div>
@@ -187,8 +194,16 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
 
           <div className="d-flex flex-wrap gap-2 mt-2 ms-5">
             {teams.map((team, index) => (
-              <span key={index} className="badge bg-secondary rounded-pill">
-                {team.uuid}
+              <span
+                key={index}
+                className="badge bg-secondary d-flex align-items-center gap-1"
+              >
+                {team}
+                <X
+                  size={14}
+                  className="cursor-pointer"
+                  onClick={() => removeTeam(index)}
+                />
               </span>
             ))}
           </div>
@@ -200,7 +215,7 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
             className="btn btn-primary rounded-pill px-4"
             onClick={handleSubmit}
           >
-            Add Project
+            Update Project
           </button>
         </div>
       </div>
@@ -208,4 +223,4 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
   );
 };
 
-export default Todo;
+export default UpdateTodo;

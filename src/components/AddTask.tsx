@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 import "../App.css";
-import type { Issue } from "../types/IssueTypes";
+import type { IssueRequest, IssueResponse } from "../types/IssueTypes";
 
 interface AddTaskProps {
   onClose: () => void;
-  onTaskAdded: (newTask: Issue) => void;
+  onTaskAdded: (newTask: IssueResponse) => void;
   projectId: number; // ✅ passed from parent
 }
 
@@ -25,17 +25,18 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
       return;
     }
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/task/add",
-        {
+    const newTask:IssueRequest ={
           title,
           description,
           type,
           status,
           priority,
           projectId, // ✅ comes from props now
-        },
+        }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/task/add",newTask,
         {
           headers: {
             "Content-Type": "application/json",
@@ -48,7 +49,8 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
         const data = response.data;
 
         // ✅ Use backend ID instead of random temp ID
-        onTaskAdded({
+        const addedTask: IssueResponse={
+          
           id: data.id,
           title: data.title || title,
           description: data.description || description,
@@ -56,11 +58,13 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
           status: data.status || status,
           priority: data.priority || priority,
           projectId,
-          assignerId: data.assignerId || 0,
-          reporterId: data.reporterId || 0,
+          assignerId: data.assignerId,
+          reporterId: data.reporterId,
           createdAt: data.createdAt || new Date().toISOString(),
           comments: data.comments || [],
-        });
+        
+        }
+        onTaskAdded(addedTask);
 
         onClose();
       }

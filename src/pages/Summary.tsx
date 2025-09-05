@@ -1,12 +1,30 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ProjectContext } from "./ProjectLayout";
 import type { TeamMember } from "../types/ProjectTypes";
+import Dropdown from "react-bootstrap/Dropdown";
+import { EllipsisVertical } from "lucide-react";
+import DeleteTodo from "../components/DeleteTodo";
+import UpdateTodo from "../components/UpdateTodo";
 
 const Summary: React.FC = () => {
   const project = useContext(ProjectContext);
 
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+
+  const handleProjectDeleted = () => {
+    setShowDeletePopup(false);
+    window.location.reload();
+  };
+  const handleProjectUpdated = () => {
+    setShowUpdatePopup(false);
+    window.location.reload();
+  };
+
   if (!project)
-    return <p className="text-center text-muted mt-4">No project data available.</p>;
+    return (
+      <p className="text-center text-muted mt-4">No project data available.</p>
+    );
 
   return (
     <div className="container my-4">
@@ -15,18 +33,39 @@ const Summary: React.FC = () => {
         className="card shadow-sm border-0 rounded"
         style={{ background: "#ffffff" }}
       >
-        <div className="card-header bg-primary text-white rounded py-3">
+        <div className="card-header bg-primary d-flex justify-content-between text-white rounded py-3">
           <h3 className="mb-0 fw-bold">
             #{project.projectId} : {project.projectName}
           </h3>
+
+          {/* ✅ Dropdown menu */}
+          <Dropdown>
+            <Dropdown.Toggle
+              as="button"
+              id="menu-dropdown"
+              bsPrefix="p-0 border-0 bg-transparent"
+              className="p-0 border-0 bg-transparent text-transparent"
+            >
+              <EllipsisVertical className="text-white me-3" size={24} />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => setShowUpdatePopup(true)}>
+                Edit
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setShowDeletePopup(true)}>
+                Delete
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
 
         <div className="card-body mx-2">
           {/* Meta Info */}
           <div className="row mb-3 text-muted small">
             <div className="col-md-6 fs-6">
-              <i className="bi bi-person-fillme-2"></i> Created By:{" "}
-              <b>{project.createdById}</b>
+              <i className="bi bi-person-fill me-2"></i> Created By:{" "}
+              <b>{(project.createdById as TeamMember).uuid} ({(project.createdById as TeamMember).userName})</b>
             </div>
             <div className="col-md-6 text-md-end fs-6">
               <i className="bi bi-calendar-event me-2"></i> Created At:{" "}
@@ -45,7 +84,7 @@ const Summary: React.FC = () => {
               <h6 className="text-primary mb-1">
                 <i className="bi bi-person-badge-fill"></i> Team Leader
               </h6>
-              <p className="fw-semibold ms-1">{project.teamLeadId}</p>
+              <p className="fw-semibold ms-1">{(project.teamLeadId as TeamMember).uuid} ({(project.teamLeadId as TeamMember).userName})</p>
             </div>
             <div className="col-lg-4 mb-3">
               <h6 className="text-primary mb-1">
@@ -96,18 +135,20 @@ const Summary: React.FC = () => {
               </thead>
               <tbody>
                 {project.teamMemberIds?.length ? (
-                  project.teamMemberIds.map((member: unknown, index: number) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{(member as TeamMember).email}</td>
-                      <td>{(member as TeamMember).uuid}</td>
-                      <td>{(member as TeamMember).userName}</td>
-                      <td>{(member as TeamMember).position}</td>
-                    </tr>
-                  ))
+                  project.teamMemberIds.map(
+                    (member: unknown, index: number) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{(member as TeamMember).email}</td>
+                        <td>{(member as TeamMember).uuid}</td>
+                        <td>{(member as TeamMember).userName}</td>
+                        <td>{(member as TeamMember).position}</td>
+                      </tr>
+                    )
+                  )
                 ) : (
                   <tr>
-                    <td colSpan={3} className="text-center text-muted py-3">
+                    <td colSpan={5} className="text-center text-muted py-3">
                       No team members assigned
                     </td>
                   </tr>
@@ -117,6 +158,22 @@ const Summary: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/*  Delete popup */}
+      {showDeletePopup && (
+        <DeleteTodo
+          projectId={project.projectId}
+          onClose={() => setShowDeletePopup(false)}
+          onProjectDeleted={handleProjectDeleted}
+        />
+      )}
+      {showUpdatePopup && (
+        <UpdateTodo
+          project={project}
+          onClose={() => setShowUpdatePopup(false)}
+          onProjectUpdated={handleProjectUpdated}
+        />
+      )}
     </div>
   );
 };
