@@ -2,12 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 import "../App.css";
-import type { Project, TeamMember } from "../types/ProjectTypes";
+import type { ProjectRequest, ProjectResponse,TeamMember } from "../types/ProjectTypes";
 
 interface TodoProps {
   onClose: () => void;
-  onProjectUpdated: (project: Project) => void;
-  project: Project;
+  onProjectUpdated: (project: ProjectResponse) => void;
+  project: ProjectResponse;
 }
 const UpdateTodo: React.FC<TodoProps> = ({
   onClose,
@@ -16,12 +16,12 @@ const UpdateTodo: React.FC<TodoProps> = ({
 }) => {
   const [projectName, setProjectName] = useState(project.projectName);
   const [projectDesc, setProjectDesc] = useState(project.projectDesc);
-  const [teamLeadId, setTeamLeadId] = useState(project.teamLeadId);
+  const [teamLeadId, setTeamLeadId] = useState((project.teamLeadId as TeamMember).uuid);
   const [deadline, setDeadline] = useState(
     project.deadline ? project.deadline.substring(0, 10) : ""
   );
 
-  const [teams, setTeams] = useState<string[]>(project.teamMemberIds || []);
+  const [teams, setTeams] = useState<string[]>(project.teamMemberIds.map(member=>member.uuid) || []);
   const [showTeamInput, setShowTeamInput] = useState(false);
   const [teamUuid, setTeamUuid] = useState("");
 
@@ -45,7 +45,7 @@ const UpdateTodo: React.FC<TodoProps> = ({
       return;
     }
 
-    const newProject: Project = {
+    const newProject: ProjectRequest = {
       projectId: 0, // temporary, backend will override
       projectName,
       projectDesc,
@@ -53,11 +53,11 @@ const UpdateTodo: React.FC<TodoProps> = ({
       deadline,
       status: "ACTIVE",
       // ✅ map to UUID strings only
-      teamMemberIds: teams.map((t) => t.uuid),
+      teamMemberIds: teams,
     };
 
     try {
-      const response = await axios.put(
+      const response = await axios.put<ProjectResponse>(
         `http://localhost:8080/project/update/${project.projectId}`,
         newProject,
         {
@@ -68,21 +68,20 @@ const UpdateTodo: React.FC<TodoProps> = ({
         }
       );
 
-      const updatedProject: Project = {
+      const updatedProject: ProjectResponse = {
         projectId: response.data.projectId,
         projectName: response.data.projectName || projectName,
         projectDesc: response.data.projectDesc || projectDesc,
         teamLeadId: response.data.teamLeadId || teamLeadId,
         status: response.data.status || "ACTIVE",
         deadline: response.data.deadline || deadline,
-        // ✅ backend should also return UUID array
-        teamMemberIds: response.data.teamMemberIds || teams.map((t) => t.uuid),
+        teamMemberIds: response.data.teamMemberIds || teams,
       };
 
       onProjectUpdated(updatedProject);
       onClose();
     } catch (error) {
-      console.error("❌ Error updating project:", error);
+      console.error("Error updating project:", error);
       alert("Failed to update project.");
     }
   };
@@ -141,7 +140,7 @@ const UpdateTodo: React.FC<TodoProps> = ({
           <input
             type="text"
             className="form-control rounded-pill"
-            value={teamLeadId}
+            value={teamLeadId as string}
             onChange={(e) => setTeamLeadId(e.target.value)}
           />
         </div>
@@ -199,7 +198,7 @@ const UpdateTodo: React.FC<TodoProps> = ({
                 key={index}
                 className="badge bg-secondary d-flex align-items-center gap-1"
               >
-                {team.uuid}{" "}
+                {team}
                 <X
                   size={14}
                   className="cursor-pointer"

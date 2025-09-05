@@ -2,11 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 import "../App.css";
-import type { Project, TeamMember } from "../types/ProjectTypes";
+import type { ProjectRequest, ProjectResponse, TeamMember } from "../types/ProjectTypes";
 
 interface TodoProps {
   onClose: () => void;
-  onProjectAdded: (project: Project) => void;
+  onProjectAdded: (project: ProjectResponse) => void;
 }
 
 const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
@@ -37,7 +37,7 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
       return;
     }
 
-    const newProject: Project = {
+    const newProject: ProjectRequest = {
       projectId: 0, // temporary, backend will override
       projectName,
       projectDesc,
@@ -60,7 +60,7 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
         }
       );
 
-      const addedProject: Project = {
+      const addedProject: ProjectResponse = {
         projectId: response.data.projectId,
         projectName: response.data.projectName || projectName,
         projectDesc: response.data.projectDesc || projectDesc,

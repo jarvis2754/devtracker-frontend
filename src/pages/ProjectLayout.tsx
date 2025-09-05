@@ -1,23 +1,23 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState, createContext } from "react";
-import type { Project } from "../types/ProjectTypes";
+import type { ProjectResponse } from "../types/ProjectTypes";
 import ProjectDetails from "./ProjectDetails";
 import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const ProjectContext = createContext<Project | null>(null);
+export const ProjectContext = createContext<ProjectResponse | null>(null);
 
 export default function ProjectLayout() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<ProjectResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchProject(projId: string) {
       try {
-        const res = await axios.get<Project>(
+        const res = await axios.get<ProjectResponse>(
           `http://localhost:8080/project/search/${projId}`,
           {
             headers: {
@@ -96,7 +96,7 @@ export default function ProjectLayout() {
           className="container m-auto"
           style={{ width: "90%", height: "70%" }}
         >
-          <h1>Project</h1>
+          <h1>#{(project.projectId)}  {(project.projectName.substring(0,1).toUpperCase())+project.projectName.substring(1)}</h1>
           <ProjectDetails />
           <Outlet />
           <div

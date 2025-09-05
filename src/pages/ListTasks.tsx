@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { Issue } from "../types/IssueTypes";
+import type { IssueResponse } from "../types/IssueTypes";
 import { useParams } from "react-router-dom";
 import NoContent from "./NoContent";
 import { Plus } from "lucide-react";
@@ -8,12 +8,12 @@ import AddTask from "../components/AddTask";
 const ListTasks: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [showPopup, setShowPopup] = useState(false);
-  const [tasks, setTasks] = useState<Issue[]>([]);
+  const [tasks, setTasks] = useState<IssueResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const handleTaskAdded = (newIssue: Issue) => {
-    setTasks([...tasks, newIssue]); // add the new task to the state
+  const handleTaskAdded = (newIssue: IssueResponse) => {
+    setTasks([...tasks, newIssue]);
   };
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const ListTasks: React.FC = () => {
 
         if (!res.ok) throw new Error("Failed to fetch Task");
 
-        const data: Issue[] = await res.json();
+        const data: IssueResponse[] = await res.json();
         setTasks(data);
       } catch (err) {
         if (err instanceof Error) {
@@ -105,17 +105,17 @@ const ListTasks: React.FC = () => {
                   <div className="row align-items-center">
                     <div className="col-12 col-md-10">
                       <div className="d-flex justify-content-between">
-                        <p className="fs-5 fw-semibold text-dark mb-1">
+                        <p className="fw-semibold text-dark mb-1" style={{fontSize:"1.2rem"}}>
                           <span className="text-danger">[{task.type}]</span>{" "}
                           {task.title}
                         </p>
                         <small className="text-muted">
-                          By: <i>{task.assignerId}</i>
+                          By: <i>{task.reporterId?task.reporterId.uuid:"None"}</i>
                         </small>
                       </div>
 
                       <div className="d-flex flex-wrap align-items-center text-secondary">
-                        <span className="me-3 fw-bold text-primary">
+                        <span className="me-3 fw-bold fs-4 text-primary">
                           #{task.id}
                         </span>
 

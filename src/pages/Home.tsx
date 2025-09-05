@@ -1,15 +1,15 @@
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import Todo from "../components/Todo";
-import type { Project } from "../types/ProjectTypes";
+import type { ProjectResponse, TeamMember } from "../types/ProjectTypes";
 import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [project, setProjects] = useState<Project[]>([]);
+  const [project, setProjects] = useState<ProjectResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const handleProjectAdded = (newProject: Project) => {
+  const handleProjectAdded = (newProject: ProjectResponse) => {
     setProjects([...project, newProject]); // add the new project to the state
   };
 
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
         }
         return res.json();
       })
-      .then((data: Project[]) => {
+      .then((data: ProjectResponse[]) => {
         setProjects(data);
       })
       .catch((error) => {
@@ -98,7 +98,7 @@ const Home: React.FC = () => {
                     {proj.projectDesc}
                   </p>
                   <p className="my-1">
-                    <strong>Team Lead:</strong> {proj.teamLeadId}
+                    <strong>Team Lead:</strong> {(proj.teamLeadId as TeamMember).uuid}
                   </p>
                   <p className="my-1">
                     <strong>Status:</strong>{" "}
