@@ -4,24 +4,25 @@ import "../App.css";
 
 interface DeleteTodoProps {
   onClose: () => void;
-  onProjectDeleted: (projectId: number) => void;
-  projectId: number; // the ID of the project to delete
+  onTaskDeleted: (task:string) => void;
+  task: string; // the ID of the project to delete
 }
 
-const DeleteTodo: React.FC<DeleteTodoProps> = ({ onClose, onProjectDeleted, projectId }) => {
+const DeleteTodo: React.FC<DeleteTodoProps> = ({ onClose, onTaskDeleted, task }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/project/delete/${projectId}`, {
+
+      await axios.delete(`http://localhost:8080/${task}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      onProjectDeleted(projectId);
+      onTaskDeleted(task);
       onClose();
     } catch (error) {
-      console.error("❌ Error deleting project:", error);
-      alert("Failed to delete project.");
+      console.error("❌ Error deleting:", error);
+      alert("Failed to delete.");
     }
   };
 
