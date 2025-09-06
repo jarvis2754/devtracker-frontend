@@ -162,9 +162,9 @@ const Summary: React.FC = () => {
       {/*  Delete popup */}
       {showDeletePopup && (
         <DeleteTodo
-          projectId={project.projectId}
+          task={`project/delete/${project.projectId}`}
           onClose={() => setShowDeletePopup(false)}
-          onProjectDeleted={handleProjectDeleted}
+          onTaskDeleted={handleProjectDeleted}
         />
       )}
       {showUpdatePopup && (

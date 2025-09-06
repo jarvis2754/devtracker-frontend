@@ -16,6 +16,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
   const [type, setType] = useState("TASK");
   const [status, setStatus] = useState("TODO");
   const [priority, setPriority] = useState("MEDIUM");
+  const [assignee,setAssignee]=useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +32,8 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
           type,
           status,
           priority,
-          projectId, // ✅ comes from props now
+          projectId,
+          assignerId: assignee, // ✅ comes from state now
         }
 
     try {
@@ -120,6 +122,17 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
               className="form-control rounded-pill"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="mb-3 d-flex align-items-center">
+            <label className="form-label fw-bold me-3" style={{ width: "120px" }}>
+              Assignee
+            </label>
+            <input
+              type="text"
+              className="form-control rounded-pill"
+              value={assignee}
+              onChange={(e) => setAssignee(e.target.value)}
             />
           </div>
 

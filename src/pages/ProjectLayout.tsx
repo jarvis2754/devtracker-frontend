@@ -55,7 +55,7 @@ export default function ProjectLayout() {
         }
 
         // 2️⃣ Otherwise, fetch all projects
-        const response = await axios.get<Project[]>(
+        const response = await axios.get<ProjectResponse[]>(
           "http://localhost:8080/project/all",
           {
             headers: {

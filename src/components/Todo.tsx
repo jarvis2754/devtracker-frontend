@@ -7,6 +7,7 @@ import type { ProjectRequest, ProjectResponse, TeamMember } from "../types/Proje
 interface TodoProps {
   onClose: () => void;
   onProjectAdded: (project: ProjectResponse) => void;
+  project?:ProjectResponse
 }
 
 const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {

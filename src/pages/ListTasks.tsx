@@ -4,13 +4,17 @@ import { useParams } from "react-router-dom";
 import NoContent from "./NoContent";
 import { Plus } from "lucide-react";
 import AddTask from "../components/AddTask";
+import TaskPopup from "../components/TaskPopup";
 
 const ListTasks: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [showPopup, setShowPopup] = useState(false);
+  const [showTaskPopup, setShowTaskPopup]= useState(false);
   const [tasks, setTasks] = useState<IssueResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const[taskId,setTaskId] =useState(0);
+
 
   const handleTaskAdded = (newIssue: IssueResponse) => {
     setTasks([...tasks, newIssue]);
@@ -68,6 +72,11 @@ const ListTasks: React.FC = () => {
     else return "bg-success";
   }
 
+  const popupParams =(showPopup:boolean,taskid:number)=>{
+    setShowTaskPopup(showPopup);
+    setTaskId(taskid);
+  }
+
   return (
     <div className="p-3 card bg-light min-vh-50 ">
       <div className="d-flex mx-2 justify-content-between">
@@ -102,6 +111,7 @@ const ListTasks: React.FC = () => {
 
               return (
                 <li key={task.id} className="task-card px-4 py-3 mb-3">
+                  <button className="w-100 border-0 bg-white" onClick={() => popupParams(true,task.id)}>
                   <div className="row align-items-center">
                     <div className="col-12 col-md-10">
                       <div className="d-flex justify-content-between">
@@ -140,7 +150,9 @@ const ListTasks: React.FC = () => {
                       </span>
                     </div>
                   </div>
+                  </button>
                 </li>
+                
               );
             })}
           </ul>
@@ -152,6 +164,10 @@ const ListTasks: React.FC = () => {
           onTaskAdded={handleTaskAdded}
           projectId={Number(id)}
         />
+      )}
+      {showTaskPopup &&(
+        <TaskPopup onClose={()=>setShowTaskPopup(false)} 
+        taskId={taskId}/>
       )}
 
       <style>{`

@@ -1,4 +1,5 @@
 import type { TeamMember } from "./ProjectTypes";
+import type{CommentResponse} from "./CommentTypes";
 
 export interface IssueRequest {
   id?: number;
@@ -7,15 +8,15 @@ export interface IssueRequest {
   type: string;
   status: string;
   priority: string;
-  assignerId?: number ;
+  assignerId?: string ;
   projectId: number;
-  reporterId?: number ;
+  reporterId?: string ;
   createdAt?: string;
-  comments?: any[];
+  comments?: number[];
 }
 
 export interface IssueResponse {
-  id?: number;
+  id: number;
   title: string;
   description: string;
   type: string;
@@ -25,5 +26,5 @@ export interface IssueResponse {
   projectId: number;
   reporterId?: TeamMember ;
   createdAt: string;
-  comments?: any[];
+  comments?: CommentResponse[];
 }
