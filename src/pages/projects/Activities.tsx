@@ -10,7 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import type { ChartOptions } from "chart.js";
-import type { IssueResponse } from "../types/IssueTypes";
+import type { IssueResponse } from "../../types/IssueTypes";
+import NoContent from "../../components/NoContent";
 
 // Register Chart.js components & plugins
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -99,19 +100,25 @@ const Activities: React.FC = () => {
       </Container>
     );
   }
-
+  
   return (
     <Container className="py-5 bg-light" fluid>
       <h2 className="text-center mb-4">Activities</h2>
 
       {/* Chart + 6 Boxes Section */}
+      {tasks.length===0 && <NoContent/>}
+      {tasks.length!==0 &&
       <Row className="mb-5">
         {/* Pie Chart (Left) */}
+        
+        
         <Col md={6} className="d-flex justify-content-center align-items-center">
           <div style={{ maxWidth: "280px" }}>
             <Pie data={data} options={options} />
+            
           </div>
         </Col>
+        
 
         {/* Six Boxes (Right in 2x3 grid) */}
         <Col md={6}>
@@ -170,7 +177,7 @@ const Activities: React.FC = () => {
             </Col>
           </Row>
         </Col>
-      </Row>
+      </Row>}
 
       {/* History Table */}
       <Card className="shadow-sm">

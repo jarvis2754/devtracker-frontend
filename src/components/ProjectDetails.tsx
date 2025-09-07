@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import Tooltip from "../components/ui/Tooltip";
-import "../components/ui/Tooltip.css";
+import Tooltip from "./ui/Tooltip";
+import "./ui/Tooltip.css";
 import { ScrollText, Rows3, LayoutDashboard, Activity } from "lucide-react";
 
 export default function ProjectNav() {

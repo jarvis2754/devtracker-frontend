@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import type { IssueResponse } from "../types/IssueTypes";
+import type { IssueResponse } from "../../types/IssueTypes";
 import { useParams } from "react-router-dom";
-import NoContent from "./NoContent";
+
 import { Plus } from "lucide-react";
-import AddTask from "../components/AddTask";
-import TaskPopup from "../components/TaskPopup";
+import AddTask from "../../components/AddTask";
+import TaskPopup from "../../components/TaskPopup";
+import NoContent from "../../components/NoContent";
 
 const ListTasks: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +51,7 @@ const ListTasks: React.FC = () => {
     };
 
     fetchTask();
-  }, [id]);
+  }, [id,showPopup,showTaskPopup]);
 
   const priorityColor = (priority: string) => {
     if (priority === "LOW") {

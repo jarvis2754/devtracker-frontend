@@ -1,26 +1,29 @@
-import {  Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Home from './pages/Home'
+import Home from './pages/home/Home'
 import './App.css'
 import Signup from './pages/auth/Signup'
 import SideNavbar from './components/SideNavbar'
 import Login from './pages/auth/Login'
-import Summary from './pages/Summary'
-import Activities from './pages/Activities'
+import Summary from './pages/projects/Summary'
+import Activities from './pages/projects/Activities'
 
-import Board from './pages/Board'
-import ListTasks from './pages/ListTasks'
-import ProjectLayout from './pages/ProjectLayout'
+import Board from './pages/projects/Board'
+import ListTasks from './pages/projects/ListTasks'
+import ProjectLayout from './components/ProjectLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Settings from './pages/Settings'
-import NoContent from './pages/NoContent'
+import NoContent from './components/NoContent'
 import OrganizationPage from './pages/auth/OrganizationPage'
+import ChatPanel from './components/ChatPanel'
 
 
 function App() {
+  
   const location = useLocation();
+
   const hideNav = () => {
-    return location.pathname === "/login" || location.pathname === "/signup";
+    return location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "join-organization";
   }
   return (
     <>
@@ -34,7 +37,7 @@ function App() {
 
         {/*protected routes*/}
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/messages" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/messages" element={<ProtectedRoute><ChatPanel/></ProtectedRoute>} />
 
         <Route path="/projects" element={<ProtectedRoute><ProjectLayout /></ProtectedRoute>}>
           <Route path=":id" element={<ProtectedRoute><Summary /></ProtectedRoute>} />
