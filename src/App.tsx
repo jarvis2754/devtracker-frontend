@@ -14,6 +14,7 @@ import ProjectLayout from './pages/ProjectLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Settings from './pages/Settings'
 import NoContent from './pages/NoContent'
+import OrganizationPage from './pages/auth/OrganizationPage'
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/join-organization" element={<OrganizationPage />} />
 
         {/*protected routes*/}
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />

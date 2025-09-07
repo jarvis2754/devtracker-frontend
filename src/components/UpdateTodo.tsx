@@ -52,7 +52,6 @@ const UpdateTodo: React.FC<TodoProps> = ({
       teamLeadId,
       deadline,
       status: "ACTIVE",
-      // ✅ map to UUID strings only
       teamMemberIds: teams,
     };
 
