@@ -15,31 +15,34 @@ export default function Login() {
         email,
         password,
       });
-      localStorage.setItem("token", response.data.token);
-      navigate("/");
+
+      const data = response.data;
+
+      if (data.status === "SUCCESS") {
+        localStorage.setItem("token", data.token);
+        navigate("/");
+      } else if (data.status === "NO_ORG") {
+        // Save userId temporarily
+        localStorage.setItem("pendingUserId", data.userId);
+        alert("You must join an organization before logging in.");
+        navigate("/join-organization");
+      }
     } catch (err: any) {
       console.error("Login failed:", err);
 
-      // Check if backend sent a message
-      if (err.response && err.response.data && err.response.data.message) {
+      if (err.response?.data?.message) {
         alert(err.response.data.message);
-      } else if (err.message) {
-        // Network / Axios related error
-        alert(`Error: ${err.message}`);
       } else {
         alert("Something went wrong. Please try again.");
       }
     }
   };
 
-
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex justify-content-center align-items-center">
       <div className="row w-100 justify-content-center">
         <div className="col-11 col-sm-8 col-md-6 col-lg-5 bg-white rounded-4 shadow p-5">
-          <h1 className="fw-bold mb-3 text-center fs-4 fs-md-3 fs-lg-2 text-nowrap">
-            Welcome Back
-          </h1>
+          <h1 className="fw-bold mb-3 text-center fs-4">Welcome Back</h1>
           <p className="text-muted mb-4 text-center">Sign in to continue</p>
 
           <form onSubmit={handleLogin}>
@@ -51,7 +54,6 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-
               />
             </div>
             <div className="mb-3">
@@ -62,7 +64,6 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-
               />
             </div>
             <button
@@ -78,7 +79,6 @@ export default function Login() {
               <Link to="/signup" className="text-primary text-decoration-none">
                 Don't have an account? Sign Up
               </Link>
-
             </div>
           </form>
         </div>

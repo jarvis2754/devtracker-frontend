@@ -6,27 +6,26 @@ export interface TeamMember {
   userId?: number;
 }
 
-// ---------- For creating/updating (send to backend) ----------
 export interface ProjectRequest {
-  projectId?: number; // optional for create
+  projectId?: number; 
   projectName: string;
   projectDesc: string;
-  teamLeadId: string; // only UUID
+  teamLeadId: string; 
   deadline: string;
-  createdById?: string; // only UUID
+  createdById?: string; 
   status: string;
-  teamMemberIds: string[]; // only UUIDs
+  teamMemberIds: string[]; 
 }
 
-// ---------- For reading (backend response) ----------
 export interface ProjectResponse {
   projectId: number;
   projectName: string;
   projectDesc: string;
-  teamLeadId: TeamMember; // full object
+  teamLeadId: TeamMember;
   createdAt?: string;
   deadline: string;
   createdById?: TeamMember;
   status: string;
-  teamMemberIds: TeamMember[]; // full objects
+  orgId?:number;
+  teamMemberIds: TeamMember[]; 
 }
