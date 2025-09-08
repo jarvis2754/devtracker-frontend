@@ -3,13 +3,22 @@ import { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import { Client, type Frame, type Message as StompMessage } from "@stomp/stompjs";
 import { decodeJwt } from "jose";
-import axios from "axios";
+
 import Sidebar from "./MessageSidebar";
 import MessageBubble from "./MessageBubble";
 
 type ChatMode = "PRIVATE" | "PROJECT" | "ORGANIZATION";
 
 export interface ChatMessage {
+  id?: string;
+  senderId: number;
+  recipientId?: number | null;
+  projectId?: number | null;
+  content: string;
+  timestamp: string;
+}
+
+export interface ChatMessageResponse {
   id?: string;
   sender: number;
   recipient?: number | null;
@@ -23,7 +32,7 @@ const WS_URL = import.meta.env.VITE_WS_URL ?? "http://localhost:8080/ws";
 
 export default function ChatPanel() {
   const [mode, setMode] = useState<ChatMode>("PRIVATE");
-  const [recipient, setRecipient] = useState<number | null>(null);
+  const [recipientId, setRecipientId] = useState<number | null>(null);
   const [projectId, setProjectId] = useState<number | null>(null);
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -144,14 +153,14 @@ export default function ChatPanel() {
     try {
       const body = JSON.parse(stompMsg.body) as ChatMessage;
       // normalize id: backend should ideally send an id
-      const incomingId = body.id ?? `${body.sender}-${body.timestamp ?? Date.now()}`;
+      const incomingId = body.id ?? `${body.senderId}-${body.timestamp ?? Date.now()}`;
       if (seenIdsRef.current.has(incomingId)) return; // already have it
       seenIdsRef.current.add(incomingId);
 
       const normalized: ChatMessage = {
         id: incomingId,
-        sender: body.sender,
-        recipient: body.recipient?? null,
+        senderId: body.senderId,
+        recipientId: body.recipientId ?? null,
         projectId: body.projectId ?? null,
         content: body.content,
         timestamp: body.timestamp ?? new Date().toISOString(),
@@ -163,13 +172,12 @@ export default function ChatPanel() {
     }
   }
 
-  // Fetch history when conversation changes
   useEffect(() => {
     if (!userId) return;
 
     let url: string | null = null;
-    if (mode === "PRIVATE" && recipient) {
-      url = `/message/private/${userId}/${recipient}`;
+    if (mode === "PRIVATE" && recipientId) {
+      url = `/message/private/${userId}/${recipientId}`;
     } else if (mode === "PROJECT" && projectId) {
       url = `/message/project/${projectId}`;
     } else if (mode === "ORGANIZATION") {
@@ -185,37 +193,28 @@ export default function ChatPanel() {
     setLoadingHistory(true);
     setError(null);
 
-    axios
-      .get(url)
+    fetch(`http://localhost:8080${url}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // if secured with JWT token
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
       .then((res) => {
-        console.log("History response:", res.data); // 👈 check actual shape
-        console.log("History raw:", res.data.content); // 👈 check actual shape
-        // Make sure it's an array
-        const rawList = Array.isArray(res.data) ? res.data : [];
-
-        const list: ChatMessage[] = rawList.map((m: any) => {
-          const id = m.id?.toString() ?? `${m.sender}-${m.timestamp}`;
-          seenIdsRef.current.add(id);
-          return {
-            id,
-            sender: m.sender ?? m.sender,
-            recipient: m.recipient ?? m.recipientId ?? null,
-            projectId: m.project ?? m.projectId ?? null,
-            content: m.content,
-            timestamp: m.timestamp,
-          };
-        });
-
-        setMessages(list);
+        if (!res.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+        return res.json();
       })
-      .catch((err) => {
-        console.error("Failed to load history", err);
-        setError("Failed to load history");
+      .then((data: ChatMessage[]) => {
+        setMessages(data);
+
       })
-      .finally(() => {
-        setLoadingHistory(false);
-      });
-  }, [mode, recipient, projectId, userId]);
+      .catch((error) => {
+        console.error("Error fetching projects:", error);
+      })
+  }, [mode, recipientId, projectId, userId]);
 
 
   // send message
@@ -233,18 +232,18 @@ export default function ChatPanel() {
 
     let destination = "";
     const payload: Partial<ChatMessage> = {
-      sender: userId,
+      senderId: userId,
       content: messageText.trim(),
       timestamp: new Date().toISOString(),
     };
 
     if (mode === "PRIVATE") {
-      if (!recipient) {
+      if (!recipientId) {
         setError("Select a recipient for private chat");
         return;
       }
       destination = "/app/chat.private";
-      payload.recipient = recipient;
+      payload.recipientId = recipientId;
     } else if (mode === "PROJECT") {
       if (!projectId) {
         setError("Select a project for project chat");
@@ -268,8 +267,8 @@ export default function ChatPanel() {
         ...prev,
         {
           id: localId,
-          sender: payload.sender!,
-          recipient: payload.recipient ?? null,
+          senderId: payload.senderId!,
+          recipientId: payload.recipientId ?? null,
           projectId: payload.projectId ?? null,
           content: payload.content!,
           timestamp: payload.timestamp!,
@@ -292,18 +291,18 @@ export default function ChatPanel() {
   }
 
   return (
-    <section className="container d-flex justify-content-center flex-column" style={{ height: "100vh" }}>
-      <div className="container m-auto" style={{ width: "90%", height: "70%" }}>
-        <div className="d-flex" style={{ height: "85vh", minHeight: 600 }}>
+    <section className="container d-flex justify-content-center flex-column" style={{ height: "60vh" }}>
+      <div className="container m-auto" style={{ width: "90%", height: "50%" }}>
+        <div className="d-flex" style={{ height: "85vh", minHeight: 400 }}>
           <Sidebar
             mode={mode}
             setMode={(m) => {
               setMode(m);
               // when switching mode, you might want to clear selection or subscribe/unsubscribe
             }}
-            recipient={recipient}
-            setRecipient={(id) => {
-              setRecipient(id);
+            recipientId={recipientId}
+            setRecipientId={(id) => {
+              setRecipientId(id);
             }}
             projectId={projectId}
             setProjectId={(pid) => {
@@ -322,7 +321,7 @@ export default function ChatPanel() {
               </div>
               <div className="text-end small text-muted">
                 Mode: <strong>{mode}</strong>
-                {mode === "PRIVATE" && recipient ? ` • To #${recipient}` : ""}
+                {mode === "PRIVATE" && recipientId ? ` • To #${recipientId}` : ""}
                 {mode === "PROJECT" && projectId ? ` • Project #${projectId}` : ""}
               </div>
             </div>
@@ -330,7 +329,9 @@ export default function ChatPanel() {
             <div className="flex-grow-1 overflow-auto p-3" style={{ background: "#eef2f7" }}>
               {loadingHistory && <div className="text-center text-muted mb-2">Loading history...</div>}
               {messages.map((m) => (
-                <MessageBubble key={m.id ?? `${m.sender}-${m.timestamp}`} msg={m} currentUserId={userId ?? -1} />
+                <div>
+                  <MessageBubble key={m.id ?? `${m.senderId}-${m.timestamp}`} msg={m} currentUserId={userId ?? -1} />
+                </div>
               ))}
               <div ref={endRef} />
             </div>

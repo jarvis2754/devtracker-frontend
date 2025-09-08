@@ -1,19 +1,18 @@
-// types/MessageTypes.ts
 export type ChatMode = "PRIVATE" | "PROJECT" | "ORGANIZATION";
 
 export interface ChatMessageDTO {
   sender: number;
-  recipient?: number | null;
+  recipientId?: number | null;
   projectId?: number | null;
   content: string;
   timestamp?: string;
 }
 
 export interface MessageModel {
-  id: string;                // client generated id for UI
+  id: string;               
   content: string;
-  sender: number;
-  recipient?: number | null;
+  senderId: number;
+  recipientId?: number | null;
   projectId?: number | null;
   type: ChatMode | "SYSTEM";
   timestamp: string;         // ISO string
