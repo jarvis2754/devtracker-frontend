@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
-import CardList from "../components/CardList";
-import type { Issue } from "../types/IssueTypes";
+import CardList from "../../components/CardList";
+import type { IssueResponse } from "../../types/IssueTypes";
 import { useParams } from "react-router-dom";
-import NoContent from "./NoContent";
+import NoContent from "../../components/NoContent";
+
 
 const Board: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [tasks, setTasks] = useState<Issue[]>([]);
+  const [tasks, setTasks] = useState<IssueResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [notStartedTodos, setNotStartedTodos] = useState<Issue[]>([]);
-  const [startedTodos, setStartedTodos] = useState<Issue[]>([]);
-  const [awaitTodos, setAwaitTodos] = useState<Issue[]>([]);
-  const [completedTodos, setCompletedTodos] = useState<Issue[]>([]);
+  const [notStartedTodos, setNotStartedTodos] = useState<IssueResponse[]>([]);
+  const [startedTodos, setStartedTodos] = useState<IssueResponse[]>([]);
+  const [awaitTodos, setAwaitTodos] = useState<IssueResponse[]>([]);
+  const [completedTodos, setCompletedTodos] = useState<IssueResponse[]>([]);
 
-  const handleTaskAdded = (newIssue: Issue) => {
+  const handleTaskAdded = (newIssue: IssueResponse) => {
     if (!newIssue.id) {
       newIssue.id = Date.now(); // temporary ID until backend gives real one
     }
@@ -39,7 +40,7 @@ const Board: React.FC = () => {
 
         if (!res.ok) throw new Error("Failed to fetch Task");
 
-        const data: Issue[] = await res.json();
+        const data: IssueResponse[] = await res.json();
         setTasks(data);
       } catch (err) {
         console.error(err);
@@ -61,10 +62,10 @@ const Board: React.FC = () => {
     }
   }, [tasks]);
 
-  const findTodoById = (id: string, array: Issue[]): Issue | undefined =>
+  const findTodoById = (id: string, array: IssueResponse[]): IssueResponse | undefined =>
     array.find((todo) => todo.id.toString() === id);
 
-  const removeTodoById = (id: string, array: Issue[]): Issue[] =>
+  const removeTodoById = (id: string, array: IssueResponse[]): IssueResponse[] =>
     array.filter((todo) => todo.id.toString() !== id);
 
   const onDragEnd = async (result: DropResult) => {
@@ -103,7 +104,7 @@ const Board: React.FC = () => {
     }
 
     // Determine new status
-    let newStatus: Issue["status"] = "TODO";
+    let newStatus: IssueResponse["status"] = "TODO";
     if (destination.droppableId === "1") {
       newStatus = "TODO";
       updatedNotStarted.splice(destination.index, 0, { ...todo, status: newStatus });

@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import Todo from "../components/Todo";
-import type { ProjectResponse, TeamMember } from "../types/ProjectTypes";
+import Todo from "../../components/Todo";
+import type { ProjectResponse, TeamMember } from "../../types/ProjectTypes";
 import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {

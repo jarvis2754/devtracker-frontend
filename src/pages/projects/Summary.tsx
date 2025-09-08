@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { ProjectContext } from "./ProjectLayout";
-import type { TeamMember } from "../types/ProjectTypes";
+import type { TeamMember } from "../../types/ProjectTypes";
 import Dropdown from "react-bootstrap/Dropdown";
 import { EllipsisVertical } from "lucide-react";
-import DeleteTodo from "../components/DeleteTodo";
-import UpdateTodo from "../components/UpdateTodo";
+import DeleteTodo from "../../components/DeleteTodo";
+import UpdateTodo from "../../components/UpdateTodo";
+import { ProjectContext } from "../../components/ProjectLayout";
 
 const Summary: React.FC = () => {
   const project = useContext(ProjectContext);
