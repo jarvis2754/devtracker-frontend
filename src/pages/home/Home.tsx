@@ -98,7 +98,7 @@ const Home: React.FC = () => {
                     {proj.projectDesc}
                   </p>
                   <p className="my-1">
-                    <strong>Team Lead:</strong> {(proj.teamLeadId as TeamMember).uuid}
+                    <strong>Team Lead:</strong> {((proj.teamLeadId as TeamMember)!==null) ? (proj.teamLeadId as TeamMember).uuid : "Unassigned"}
                   </p>
                   <p className="my-1">
                     <strong>Status:</strong>{" "}

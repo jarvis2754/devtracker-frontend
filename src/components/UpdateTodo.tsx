@@ -16,7 +16,11 @@ const UpdateTodo: React.FC<TodoProps> = ({
 }) => {
   const [projectName, setProjectName] = useState(project.projectName);
   const [projectDesc, setProjectDesc] = useState(project.projectDesc);
-  const [teamLeadId, setTeamLeadId] = useState((project.teamLeadId as TeamMember).uuid);
+  const [teamLeadId, setTeamLeadId] = useState(
+    project.teamLeadId && (project.teamLeadId as TeamMember).uuid
+      ? (project.teamLeadId as TeamMember).uuid
+      : ""
+  );
   const [deadline, setDeadline] = useState(
     project.deadline ? project.deadline.substring(0, 10) : ""
   );

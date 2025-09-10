@@ -23,11 +23,11 @@ function App() {
   const location = useLocation();
 
   const hideNav = () => {
-    return location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "join-organization";
+    return location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/join-organization";
   }
   return (
     <>
-      {!hideNav() && <Navbar />}
+      {!hideNav() && <Navbar />}       
       {!hideNav() && <SideNavbar />}
       <Routes>
 

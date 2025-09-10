@@ -84,7 +84,11 @@ const Summary: React.FC = () => {
               <h6 className="text-primary mb-1">
                 <i className="bi bi-person-badge-fill"></i> Team Leader
               </h6>
-              <p className="fw-semibold ms-1">{(project.teamLeadId as TeamMember).uuid} ({(project.teamLeadId as TeamMember).userName})</p>
+              <p className="fw-semibold ms-1">
+                {project.teamLeadId && (project.teamLeadId as TeamMember).uuid
+                  ? `${(project.teamLeadId as TeamMember).uuid} (${(project.teamLeadId as TeamMember).userName})`
+                  : <span className="text-muted">Not assigned</span>}
+              </p>
             </div>
             <div className="col-lg-4 mb-3">
               <h6 className="text-primary mb-1">
