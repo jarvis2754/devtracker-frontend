@@ -53,7 +53,7 @@ const Activities: React.FC = () => {
     inProgress: tasks.filter((t) => t.status === "IN_PROGRESS").length,
     review: tasks.filter((t) => t.status === "AWAIT_APPROVAL").length,
     done: tasks.filter((t) => t.status === "COMPLETED").length,
-    incomplete: tasks.filter((t) => t.status === "INCOMPLETE").length,
+
   };
 
   // Chart Data
@@ -158,20 +158,12 @@ const Activities: React.FC = () => {
               </Card>
             </Col>
           </Row>
-          <Row>
-            <Col md={6}>
-              <Card className="shadow-sm text-center">
-                <Card.Body>
-                  <h6 className="mb-2 text-muted">Box Five</h6>
-                  <h3>-</h3>
-                </Card.Body>
-              </Card>
-            </Col>
+          <Row> 
             <Col md={6}>
               <Card className="shadow-sm text-center">
                 <Card.Body>
                   <h6 className="mb-2 text-danger">Incomplete</h6>
-                  <h3>{counts.incomplete}</h3>
+                  <h3>{counts.todo + counts.inProgress + counts.review}</h3>
                 </Card.Body>
               </Card>
             </Col>
