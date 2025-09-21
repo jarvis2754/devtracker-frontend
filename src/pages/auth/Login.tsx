@@ -16,13 +16,12 @@ export default function Login() {
         password,
       });
 
-      const data = response.data;
-
+      const data = response.data; 
       if (data.status === "SUCCESS") {
         localStorage.setItem("token", data.token);
         navigate("/");
       } else if (data.status === "NO_ORG") {
-        // Save userId temporarily
+
         localStorage.setItem("pendingUserId", data.userId);
         alert("You must join an organization before logging in.");
         navigate("/join-organization");
