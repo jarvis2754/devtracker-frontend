@@ -15,6 +15,6 @@ export interface MessageModel {
   recipientId?: number | null;
   projectId?: number | null;
   type: ChatMode | "SYSTEM";
-  timestamp: string;         // ISO string
+  timestamp: string;
   direction?: "in" | "out" | "system";
 }

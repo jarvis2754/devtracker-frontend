@@ -49,7 +49,7 @@ const Home: React.FC = () => {
       >
         <div
           className="col-12 col-md-6 col-lg-4 p-2"
-          style={{ height: "250px" }}
+          style={{ height: "230px" }}
         >
           <div
             className="custom-card border-0 shadow rounded-4 h-100 p-3"
@@ -77,7 +77,7 @@ const Home: React.FC = () => {
           <div
             key={proj.projectId}
             className="col-12 col-md-6 col-lg-4 p-2"
-            style={{ height: "250px" }}
+            style={{ height: "230px" }}
           >
             <Link
               to={`/projects/${proj.projectId}`}

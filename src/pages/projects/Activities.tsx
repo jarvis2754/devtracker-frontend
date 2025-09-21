@@ -69,28 +69,32 @@ const Activities: React.FC = () => {
     ],
   };
 
-  // Chart Options
   const options: ChartOptions<"pie"> = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        color: "#000",
-        formatter: (value: number, ctx: any) => {
-          let sum = ctx.chart.data.datasets[0].data.reduce(
-            (a: number, b: number) => a + b,
-            0
-          );
-          if (sum === 0) return "0%";
-          let percentage = ((value * 100) / sum).toFixed(1) + "%";
-          return percentage;
-        },
-        anchor: "end",
-        align: "end",
-        font: { weight: "bold" },
+  responsive: true,
+  layout: {
+    padding: 30, 
+  },
+  plugins: {
+    legend: { display: false },
+    datalabels: {
+      color: "#000",
+      formatter: (value: number, ctx: any) => {
+        let sum = ctx.chart.data.datasets[0].data.reduce(
+          (a: number, b: number) => a + b,
+          0
+        );
+        if (sum === 0) return "0%";
+        let percentage = ((value * 100) / sum).toFixed(1) + "%";
+        return percentage;
       },
+      anchor: "end", 
+      align: "end",  
+      font: { weight: "bold" },
+ 
     },
-  };
+  },
+};
+
 
   if (loading) {
     return (
@@ -114,13 +118,10 @@ const Activities: React.FC = () => {
         
         <Col md={6} className="d-flex justify-content-center align-items-center">
           <div style={{ maxWidth: "280px" }}>
-            <Pie data={data} options={options} />
-            
+              <Pie data={data} options={options} />
           </div>
         </Col>
         
-
-        {/* Six Boxes (Right in 2x3 grid) */}
         <Col md={6}>
           <Row className="mb-3">
             <Col md={6}>

@@ -11,7 +11,7 @@ export default function Logout() {
   return (
     <button
       onClick={handleLogout}
-      className="btn btn-danger rounded-3"
+      className="btn btn-link text-danger text-decoration-none p-0"
     >
       Logout
     </button>
