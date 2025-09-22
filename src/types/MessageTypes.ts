@@ -1,7 +1,7 @@
 export type ChatMode = "PRIVATE" | "PROJECT" | "ORGANIZATION";
 
 export interface ChatMessageDTO {
-  sender: number;
+  senderId: number;
   recipientId?: number | null;
   projectId?: number | null;
   content: string;
