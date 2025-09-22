@@ -12,7 +12,7 @@ const DeleteTodo: React.FC<DeleteTodoProps> = ({ onClose, onTaskDeleted, task })
   const handleDelete = async () => {
     try {
 
-      await axios.delete(`http://localhost:8080/${task}`, {
+      await axios.delete(`https://devtracker-0es2.onrender.com/${task}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -2,7 +2,7 @@ import { Settings, CircleUserRound } from "lucide-react";
 import Tooltip from "./ui/Tooltip";
 import "./ui/Tooltip.css";
 import SideNavbar from "./SideNavbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import ProjectSearch from "./ProjectSearch";
@@ -13,7 +13,7 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLLIElement | null>(null);
 
   const navIcons = [
-    { icon: Settings, label: "Settings" },
+    { icon: Settings, label: "Settings", link: "/settings" },
     { icon: CircleUserRound, label: "Profile", isProfile: true },
   ];
 
@@ -58,15 +58,21 @@ export default function Navbar() {
                   mobilePosition="bottom"
                   desktopPosition="bottom"
                 >
-                  <div
-                    className="d-flex align-items-center gap-2 p-2"
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      item.isProfile ? setOpenProfile((prev) => !prev) : null
-                    }
-                  >
-                    <item.icon className="w-4 h-4 md:w-6 md:h-6" />
-                  </div>
+                  {item.link ? (
+                    <Link to={item.link} className="d-flex text-dark align-items-center gap-2 p-2">
+                      <item.icon className="w-4 h-4 md:w-6 md:h-6" />
+                    </Link>
+                  ) : (
+                    <div
+                      className="d-flex align-items-center gap-2 p-2"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        item.isProfile ? setOpenProfile((prev) => !prev) : null
+                      }
+                    >
+                      <item.icon className="w-4 h-4 md:w-6 md:h-6" />
+                    </div>
+                  )}
                 </Tooltip>
 
                 {/* Profile Dropdown */}

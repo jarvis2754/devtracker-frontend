@@ -30,7 +30,7 @@ const Board: React.FC = () => {
 
     const fetchTask = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/task/all/${id}`, {
+        const res = await fetch(`https://devtracker-0es2.onrender.com/task/all/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -127,7 +127,7 @@ const Board: React.FC = () => {
 
     try {
       // 🔥 Call backend to persist status change
-      await fetch(`http://localhost:8080/task/update-status/${todo.id}`, {
+      await fetch(`https://devtracker-0es2.onrender.com/task/update-status/${todo.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

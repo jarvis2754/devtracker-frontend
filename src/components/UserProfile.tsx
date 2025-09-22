@@ -40,7 +40,7 @@ export default function UserProfile({ onClose }: UserProfileProps) {
       console.log("Decoded userId:", uid);
 
       axios
-        .get<UserDTO>(`http://localhost:8080/user/${uid}`, {
+        .get<UserDTO>(`https://devtracker-0es2.onrender.com/user/${uid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

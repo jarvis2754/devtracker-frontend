@@ -28,7 +28,7 @@ export interface ChatMessageResponse {
 }
 
 /** Change this if your backend WS URL differs */
-const WS_URL = import.meta.env.VITE_WS_URL ?? "http://localhost:8080/ws";
+const WS_URL = import.meta.env.VITE_WS_URL ?? "https://devtracker-0es2.onrender.com/ws";
 
 export default function ChatPanel() {
   const [mode, setMode] = useState<ChatMode>("PRIVATE");
@@ -193,7 +193,7 @@ export default function ChatPanel() {
     setLoadingHistory(true);
     setError(null);
 
-    fetch(`http://localhost:8080${url}`, {
+    fetch(`https://devtracker-0es2.onrender.com${url}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -38,7 +38,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onTaskAdded, projectId }) =>
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/task/add",newTask,
+        "https://devtracker-0es2.onrender.com/task/add",newTask,
         {
           headers: {
             "Content-Type": "application/json",

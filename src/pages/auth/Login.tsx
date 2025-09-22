@@ -11,7 +11,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", {
+      const response = await axios.post("https://devtracker-0es2.onrender.com/api/auth/login", {
         email,
         password,
       });

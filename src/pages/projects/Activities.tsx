@@ -26,7 +26,7 @@ const Activities: React.FC = () => {
 
     const fetchTasks = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/task/all/${id}`, {
+        const res = await fetch(`https://devtracker-0es2.onrender.com/task/all/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

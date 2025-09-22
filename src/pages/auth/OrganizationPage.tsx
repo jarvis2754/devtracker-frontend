@@ -22,7 +22,7 @@ export default function OrganizationPage() {
     }
 
     try {
-      await axios.post("http://localhost:8080/organization/join", {
+      await axios.post("https://devtracker-0es2.onrender.com/organization/join", {
         orgId: Number(orgId),
         passcode,
         userId: Number(userId),
@@ -53,7 +53,7 @@ const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
   }
 
   try {
-    const response = await axios.post("http://localhost:8080/organization/create", {
+    const response = await axios.post("https://devtracker-0es2.onrender.com/organization/create", {
       name: orgName,
       description: orgDesc,
       ownerId: Number(userId),
@@ -69,7 +69,7 @@ const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
     );
 
     try {
-      await axios.post("http://localhost:8080/organization/join", {
+      await axios.post("https://devtracker-0es2.onrender.com/organization/join", {
         orgId: Number(createdOrg.orgId),
         passcode: createdOrg.joinPasscode,
         userId: Number(userId),

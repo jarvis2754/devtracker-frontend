@@ -35,7 +35,7 @@ const UpdateCommentTodo: React.FC<CommentProps> = ({
       setLoading(true);
 
       const response = await axios.put(
-        `http://localhost:8080/comments/update/${comment.id}`,
+        `https://devtracker-0es2.onrender.com/comments/update/${comment.id}`,
         updatedComment,
         {
           headers: {

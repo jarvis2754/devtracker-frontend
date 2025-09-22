@@ -61,7 +61,7 @@ const UpdateTodo: React.FC<TodoProps> = ({
 
     try {
       const response = await axios.put<ProjectResponse>(
-        `http://localhost:8080/project/update/${project.projectId}`,
+        `https://devtracker-0es2.onrender.com/project/update/${project.projectId}`,
         newProject,
         {
           headers: {
