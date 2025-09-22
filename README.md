@@ -31,7 +31,7 @@
 
 ## 🚀 Live Demo
 
-Check out the live demo: [DevTracker Demo](https://your-live-demo-link.com)  
+Check out the live demo: [DevTracker Demo](https://devtrackerpj.netlify.app/)  
 
 ![DevTracker Demo](./demo/devtracker-demo.gif)  
 *Replace the above GIF with your actual demo.*
