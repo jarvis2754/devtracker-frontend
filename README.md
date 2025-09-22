@@ -1,69 +1,74 @@
-# React + TypeScript + Vite
+# DevTracker Frontend 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![React](https://img.shields.io/badge/React-17.0.2-blue?logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind](https://img.shields.io/badge/TailwindCSS-3.3.2-blue?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-Currently, two official plugins are available:
+**DevTracker** is a modern project management frontend that helps teams track tasks, manage projects, and collaborate efficiently. This repository contains the **React.js + TypeScript frontend** of the app.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🌟 Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ✅ View all projects with deadlines and descriptions  
+- ✅ Create, edit, and delete tasks in projects  
+- ✅ Drag-and-drop task management for seamless workflow  
+- ✅ Responsive, mobile-friendly UI  
+- ✅ Integration-ready with backend APIs  
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🛠 Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**Frontend:** React.js, TypeScript  
+**UI Library:** Tailwind CSS, Lucide Icons  
+**Routing:** React Router  
+**State Management:** React Hooks  
+**API Communication:** Axios  
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Live Demo
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Check out the live demo: [DevTracker Demo](https://your-live-demo-link.com)  
+
+![DevTracker Demo](./demo/devtracker-demo.gif)  
+*Replace the above GIF with your actual demo.*
+
+---
+
+## ⚙️ Installation
+
+1. **Clone the repository**  
+`git clone <your-repo-url>`  
+`cd devtracker-frontend`
+
+2. **Install dependencies**  
+`npm install`
+
+3. **Run the app**  
+`npm start`  
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository  
+2. Create a feature branch: `git checkout -b feature/YourFeature`  
+3. Commit your changes: `git commit -m "Add your feature"`  
+4. Push to the branch: `git push origin feature/YourFeature`  
+5. Open a Pull Request  
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+Made with ❤️ by **Vignesh P.**  
+Connect with me: [LinkedIn](https://www.linkedin.com/in/vignesh-p-46153a302) | [GitHub](https://github.com/javi2754)
