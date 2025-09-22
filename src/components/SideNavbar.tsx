@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   Home,
-  Users,
+  // Users,
   MessageSquareMore,
   Cuboid,
   Settings,
@@ -20,7 +20,7 @@ function SideNavbar() {
     { path: "/", icon: Home, label: "Home" },
     { path: "/messages", icon: MessageSquareMore, label: "Messages" },
     { path: "/projects", icon: Cuboid, label: "Projects" },
-    { path: "/members", icon: Users, label: "Members" },
+    // { path: "/members", icon: Users, label: "Members" },
     { path: "/settings", icon: Settings, label: "Settings" },
   ];
   return (

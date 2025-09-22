@@ -95,7 +95,7 @@ export default function ChatPanel() {
       },
       onStompError: (frame) => {
         console.error("Broker reported error: ", frame);
-        setError(frame?.message ?? "STOMP broker error");
+        setError(frame?.body ?? "STOMP broker error");
       },
       onDisconnect: () => {
         setConnected(false);
