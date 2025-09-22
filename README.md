@@ -22,7 +22,7 @@
 ## 🛠 Tech Stack
 
 **Frontend:** React.js, TypeScript  
-**UI Library:** Tailwind CSS, Lucide Icons  
+**UI Library:** Bootstrap, Lucide Icons  
 **Routing:** React Router  
 **State Management:** React Hooks  
 **API Communication:** Axios  
