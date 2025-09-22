@@ -14,7 +14,7 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/project/all", {
+    fetch("https://devtracker-0es2.onrender.com/project/all", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +37,31 @@ const Home: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading projects...</p>;
+  if (loading) {
+    return (
+      <section
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "90vh" }}
+      >
+        <div
+          className="container row mt-5"
+          style={{ width: "85%"}}
+        >
+          <div className="text-center">
+            <div
+              className="spinner-border text-primary mb-3"
+              role="status"
+              style={{ width: "3rem", height: "3rem" }}
+            >
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="fw-bold">Loading projects...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       className="container d-flex justify-content-center flex-column "
@@ -49,7 +73,7 @@ const Home: React.FC = () => {
       >
         <div
           className="col-12 col-md-6 col-lg-4 p-2"
-          style={{ height: "230px" }}
+          style={{ height: "250px" }}
         >
           <div
             className="custom-card border-0 shadow rounded-4 h-100 p-3"
@@ -77,7 +101,7 @@ const Home: React.FC = () => {
           <div
             key={proj.projectId}
             className="col-12 col-md-6 col-lg-4 p-2"
-            style={{ height: "230px" }}
+            style={{ height: "250px" }}
           >
             <Link
               to={`/projects/${proj.projectId}`}
@@ -103,9 +127,8 @@ const Home: React.FC = () => {
                   <p className="my-1">
                     <strong>Status:</strong>{" "}
                     <span
-                      className={`badge rounded-pill ${
-                        proj.status === "ACTIVE" ? "bg-success" : "bg-secondary"
-                      }`}
+                      className={`badge rounded-pill ${proj.status === "ACTIVE" ? "bg-success" : "bg-secondary"
+                        }`}
                     >
                       {proj.status}
                     </span>

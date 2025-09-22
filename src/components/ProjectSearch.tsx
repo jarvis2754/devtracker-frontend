@@ -4,28 +4,31 @@ import type { ProjectResponse } from "../types/ProjectTypes";
 import { Link } from "react-router-dom";
 
 interface ProjectSearchProps {
-  onSelect?: (projectName: string) => void; // optional callback when a project is selected
+  onSelect?: (projectName: string) => void;
 }
 
 export default function ProjectSearch({ onSelect }: ProjectSearchProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProjects, setFilteredProjects] = useState<ProjectResponse[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const searchRef = useRef<HTMLDivElement | null>(null);
   const cancelTokenRef = useRef<any>(null);
 
-  const highlightQuery = (name:string) =>{
+  const highlightQuery = (name: string) => {
     const parts = name.split(new RegExp(`(${searchQuery})`, 'gi'));
     return (
       <>
-        {parts.map((part, index) => 
-          part.toLowerCase() === searchQuery.toLowerCase() ? 
-          <span key={index} className="bg-secondary text-light">{part}</span> : 
-          part
+        {parts.map((part, index) =>
+          part.toLowerCase() === searchQuery.toLowerCase() ? (
+            <span key={index} className="bg-secondary text-light">{part}</span>
+          ) : (
+            part
+          )
         )}
       </>
     );
-  }
+  };
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -38,46 +41,39 @@ export default function ProjectSearch({ onSelect }: ProjectSearchProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch projects from backend as user types
+  // Fetch projects
   useEffect(() => {
     if (!searchQuery) {
       setFilteredProjects([]);
+      setLoading(false);
       return;
     }
 
     const rawToken = localStorage.getItem("token");
     const token = rawToken?.startsWith("Bearer ") ? rawToken.slice(7) : rawToken;
+    if (!token) return;
 
-    if (!token) {
+    if (cancelTokenRef.current) cancelTokenRef.current.cancel();
+    const source = axios.CancelToken.source();
+    cancelTokenRef.current = source;
 
-      return;
-    }
-
-    // Cancel previous request if still pending
-    if (cancelTokenRef.current) {
-      cancelTokenRef.current.cancel();
-    }
-    cancelTokenRef.current = axios.CancelToken.source();
-
+    setLoading(true);
     axios
-      .get<ProjectResponse[]>("http://localhost:8080/project/search", {
+      .get<ProjectResponse[]>("https://devtracker-0es2.onrender.com/project/search", {
         params: { keyword: searchQuery },
         headers: { Authorization: `Bearer ${token}` },
-        cancelToken: cancelTokenRef.current.token,
+        cancelToken: source.token,
       })
-      .then((res) => {
-        setFilteredProjects(res.data);
-
-      })
+      .then((res) => setFilteredProjects(res.data))
       .catch((err) => {
-        if (!axios.isCancel(err)) {
- 
-          console.error(err);
-        }
+        if (!axios.isCancel(err)) console.error(err);
+      })
+      .finally(() => {
+        if (cancelTokenRef.current === source) setLoading(false);
       });
 
     return () => {
-      if (cancelTokenRef.current) cancelTokenRef.current.cancel();
+      source.cancel();
     };
   }, [searchQuery]);
 
@@ -92,7 +88,7 @@ export default function ProjectSearch({ onSelect }: ProjectSearchProps) {
       />
 
       {/* Dropdown */}
-      {filteredProjects.length > 0 && (
+      {(filteredProjects.length > 0 || loading || searchQuery) && (
         <ul
           className="list-group position-absolute"
           style={{
@@ -103,26 +99,36 @@ export default function ProjectSearch({ onSelect }: ProjectSearchProps) {
             zIndex: 1000,
           }}
         >
-          {filteredProjects.map((project) => (
-            <Link
-              to={`/projects/${project.projectId}`}
-              className="text-decoration-none"
-              onClick={() => setSearchQuery("")}
-            >
-            <li
-              key={project.projectId}
-              className="list-group-item text-dark list-group-item-action border-0 p-2"
-              onClick={() => {
-                setSearchQuery(project.projectName);
-                setFilteredProjects([]);
-                if (onSelect) onSelect(project.projectName);
-              }}
-              style={{ cursor: "pointer" }}
-            > 
-              {highlightQuery(project.projectName)}
+          {loading ? (
+            <li className="list-group-item text-center text-muted">
+              Loading...
             </li>
-            </Link>
-          ))}
+          ) : filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
+              <Link
+                to={`/projects/${project.projectId}`}
+                className="text-decoration-none"
+                onClick={() => setSearchQuery("")}
+                key={project.projectId}
+              >
+                <li
+                  className="list-group-item text-dark list-group-item-action border-0 p-2"
+                  onClick={() => {
+                    setSearchQuery(project.projectName);
+                    setFilteredProjects([]);
+                    if (onSelect) onSelect(project.projectName);
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  {highlightQuery(project.projectName)}
+                </li>
+              </Link>
+            ))
+          ) : (
+            <li className="list-group-item text-center text-muted">
+              No projects found
+            </li>
+          )}
         </ul>
       )}
     </div>

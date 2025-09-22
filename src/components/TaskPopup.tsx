@@ -57,7 +57,7 @@ const TaskPopup: React.FC<TaskProps> = ({ onClose, taskId }) => {
   const fetchTask = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/task/get/${taskId}`,
+        `https://devtracker-0es2.onrender.com/task/get/${taskId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -78,7 +78,7 @@ const TaskPopup: React.FC<TaskProps> = ({ onClose, taskId }) => {
     try {
       setSubmitting(true);
       await axios.post(
-        "http://localhost:8080/comments/add",
+        "https://devtracker-0es2.onrender.com/comments/add",
         {
           issueId: taskId,
           content: newComment,

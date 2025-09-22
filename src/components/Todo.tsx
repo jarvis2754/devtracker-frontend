@@ -51,7 +51,7 @@ const Todo: React.FC<TodoProps> = ({ onClose, onProjectAdded }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/project/add",
+        "https://devtracker-0es2.onrender.com/project/add",
         newProject,
         {
           headers: {

@@ -16,7 +16,7 @@ export default function Signup() {
 
     try {
       // Call your Spring Boot signup endpoint
-      await axios.post("http://localhost:8080/api/auth/signup", {
+      await axios.post("https://devtracker-0es2.onrender.com/api/auth/signup", {
         userName,
         uuId,
         email,

@@ -18,7 +18,7 @@ export default function ProjectLayout() {
     async function fetchProject(projId: string) {
       try {
         const res = await axios.get<ProjectResponse>(
-          `http://localhost:8080/project/search/${projId}`,
+          `https://devtracker-0es2.onrender.com/project/search/${projId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -56,7 +56,7 @@ export default function ProjectLayout() {
 
         // 2️⃣ Otherwise, fetch all projects
         const response = await axios.get<ProjectResponse[]>(
-          "http://localhost:8080/project/all",
+          "https://devtracker-0es2.onrender.com/project/all",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -83,7 +83,31 @@ export default function ProjectLayout() {
     ensureProjectId();
   }, [id, navigate]);
 
-  if (loading) return <p>Loading project...</p>;
+  if (loading) {
+    return (
+      <section
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "90vh" }}
+      >
+        <div
+          className="container row mt-5"
+          style={{ width: "85%"}}
+        >
+          <div className="text-center">
+            <div
+              className="spinner-border text-primary mb-3"
+              role="status"
+              style={{ width: "3rem", height: "3rem" }}
+            >
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="fw-bold">Loading project...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (!project) return <p>No project found.</p>;
 
   return (
