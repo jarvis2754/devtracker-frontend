@@ -2,7 +2,7 @@
 
 [![React](https://img.shields.io/badge/React-17.0.2-blue?logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind](https://img.shields.io/badge/TailwindCSS-3.3.2-blue?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.2-purple?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 **DevTracker** is a modern project management frontend that helps teams track tasks, manage projects, and collaborate efficiently. This repository contains the **React.js + TypeScript frontend** of the app.
@@ -33,8 +33,7 @@
 
 Check out the live demo: [DevTracker Demo](https://devtrackerpj.netlify.app/)  
 
-![DevTracker Demo](./demo/devtracker-demo.gif)  
-*Replace the above GIF with your actual demo.*
+<img width="1918" height="862" alt="image" src="https://github.com/user-attachments/assets/99e70908-0313-43ff-8e9f-23b3dc9a0062" />
 
 ---
 
