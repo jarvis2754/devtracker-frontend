@@ -40,7 +40,7 @@ Check out the live demo: [DevTracker Demo](https://devtrackerpj.netlify.app/)
 ## ⚙️ Installation
 
 1. **Clone the repository**  
-`git clone <your-repo-url>`  
+`git clone https://github.com/jarvis2754/devtracker-frontend.git`  
 `cd devtracker-frontend`
 
 2. **Install dependencies**  
