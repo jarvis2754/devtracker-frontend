@@ -68,8 +68,8 @@ const Home: React.FC = () => {
       style={{ height: "90vh" }}
     >
       <div
-        className="container row m-auto"
-        style={{ width: "85%", height: "55%" }}
+        className="row m-auto custom-width"
+        style={{ height: "55%" }}
       >
         <div
           className="col-12 col-md-6 col-lg-4 p-2"

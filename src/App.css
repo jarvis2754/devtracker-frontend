@@ -60,6 +60,12 @@ li {
   }
 }
 
+/* CSS */
+@media (min-width: 768px) {
+  .custom-width {
+    width: 85%;
+  }
+}
 
 .custom-navbar {
   z-index: 1100 !important;

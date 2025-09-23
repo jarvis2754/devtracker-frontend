@@ -14,7 +14,7 @@ export default function ProjectNav() {
   ];
 
   return (
-    <nav>
+    <nav className="ps-3 ps-md-2">
       <ul className="list-unstyled shadow d-inline-flex">
         {navlinks.map((link) => (
           <li

@@ -90,7 +90,7 @@ export default function ProjectLayout() {
         style={{ height: "90vh" }}
       >
         <div
-          className="container row mt-5"
+          className="container row mt-5 custom-width"
           style={{ width: "85%"}}
         >
           <div className="text-center">
@@ -117,10 +117,10 @@ export default function ProjectLayout() {
         style={{ height: "100vh" }}
       >
         <div
-          className="container m-auto"
-          style={{ width: "90%", height: "70%" }}
+          className="custom-width m-auto"
+          style={{  height: "70%" }}
         >
-          <h1>#{(project.projectId)}  {(project.projectName.substring(0,1).toUpperCase())+project.projectName.substring(1)}</h1>
+          <h1 className="ps-3 ps-md-2">#{(project.projectId)}  {(project.projectName.substring(0,1).toUpperCase())+project.projectName.substring(1)}</h1>
           <ProjectDetails />
           <Outlet />
           <div
