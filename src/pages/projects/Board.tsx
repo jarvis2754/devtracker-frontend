@@ -4,6 +4,7 @@ import CardList from "../../components/CardList";
 import type { IssueResponse } from "../../types/IssueTypes";
 import { useParams } from "react-router-dom";
 import NoContent from "../../components/NoContent";
+import Loading from "../../components/Loading";
 
 
 const Board: React.FC = () => {
@@ -142,8 +143,11 @@ const Board: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading tasks...</p>;
-  if (error) return <NoContent/>;
+  if (loading) return (
+    <Loading name="Kanban board"/>
+  );
+  
+  if (error) return <NoContent />;
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

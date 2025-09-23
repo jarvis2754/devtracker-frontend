@@ -45,7 +45,7 @@ const Home: React.FC = () => {
       >
         <div
           className="container row mt-5"
-          style={{ width: "85%"}}
+          style={{ width: "85%" }}
         >
           <div className="text-center">
             <div
@@ -122,7 +122,7 @@ const Home: React.FC = () => {
                     {proj.projectDesc}
                   </p>
                   <p className="my-1">
-                    <strong>Team Lead:</strong> {((proj.teamLeadId as TeamMember)!==null) ? (proj.teamLeadId as TeamMember).uuid : "Unassigned"}
+                    <strong>Team Lead:</strong> {((proj.teamLeadId as TeamMember) !== null) ? (proj.teamLeadId as TeamMember).uuid : "Unassigned"}
                   </p>
                   <p className="my-1">
                     <strong>Status:</strong>{" "}
@@ -142,7 +142,15 @@ const Home: React.FC = () => {
             </Link>
           </div>
         ))}
+        <div
+        className="col-12 col-md-6 col-lg-4 p-2"
+        style={{ height: "100px" }}
+      >
+        <div className="custom-card rounded-4 h-100 p-3"></div>
       </div>
+      </div>
+      
+
       {showPopup && (
         <Todo
           onClose={() => setShowPopup(false)}

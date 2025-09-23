@@ -10,11 +10,11 @@ import NoContent from "../../components/NoContent";
 const ListTasks: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [showPopup, setShowPopup] = useState(false);
-  const [showTaskPopup, setShowTaskPopup]= useState(false);
+  const [showTaskPopup, setShowTaskPopup] = useState(false);
   const [tasks, setTasks] = useState<IssueResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const[taskId,setTaskId] =useState(0);
+  const [taskId, setTaskId] = useState(0);
 
 
   const handleTaskAdded = (newIssue: IssueResponse) => {
@@ -51,7 +51,7 @@ const ListTasks: React.FC = () => {
     };
 
     fetchTask();
-  }, [id,showPopup,showTaskPopup]);
+  }, [id, showPopup, showTaskPopup]);
 
   const priorityColor = (priority: string) => {
     if (priority === "LOW") {
@@ -66,14 +66,14 @@ const ListTasks: React.FC = () => {
       return "bg-danger"
     }
   }
-  const listColor = (status:string) => {
+  const listColor = (status: string) => {
     if (status === "TODO") return "bg-primary";
     else if ((status === "IN_PROGRESS")) return "bg-warning";
     else if (status === "AWAIT_APPROVAL") return "bg-info";
     else return "bg-success";
   }
 
-  const popupParams =(showPopup:boolean,taskid:number)=>{
+  const popupParams = (showPopup: boolean, taskid: number) => {
     setShowTaskPopup(showPopup);
     setTaskId(taskid);
   }
@@ -96,7 +96,18 @@ const ListTasks: React.FC = () => {
       </div>
       <div className="inner-content mt-3">
         {loading ? (
-          <p>Loading project...</p>
+          <ul className="list-unstyled ">
+            <li className="task-card px-4 py-3 mb-3 custom-vw">
+              <div className="row">
+                <div className="col-12">
+                  <div className="d-flex align-items-center justify-content-center">
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    <span className="fw-semibold text-secondary">Loading project...</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
         ) : error ? (
           <NoContent />
         ) : !tasks ? (
@@ -112,48 +123,48 @@ const ListTasks: React.FC = () => {
 
               return (
                 <li key={task.id} className="task-card px-4 py-3 mb-3">
-                  <button className="w-100 border-0 bg-white" onClick={() => popupParams(true,task.id)}>
-                  <div className="row align-items-center">
-                    <div className="col-12 col-md-10">
-                      <div className="d-flex justify-content-between">
-                        <p className="fw-semibold text-dark mb-1" style={{fontSize:"1.2rem"}}>
-                          <span className="text-danger">[{task.type}]</span>{" "}
-                          {task.title}
-                        </p>
-                        <small className="text-muted">
-                          By: <i>{task.reporterId?task.reporterId.uuid:"None"}</i>
-                        </small>
-                      </div>
+                  <button className="w-100 border-0 bg-white" onClick={() => popupParams(true, task.id)}>
+                    <div className="row align-items-center">
+                      <div className="col-12 col-md-10">
+                        <div className="d-flex justify-content-between">
+                          <p className="fw-semibold text-dark mb-1" style={{ fontSize: "1.2rem" }}>
+                            <span className="text-danger">[{task.type}]</span>{" "}
+                            {task.title}
+                          </p>
+                          <small className="text-muted">
+                            By: <i>{task.reporterId ? task.reporterId.uuid : "None"}</i>
+                          </small>
+                        </div>
 
-                      <div className="d-flex flex-wrap align-items-center text-secondary">
-                        <span className="me-3 fw-bold fs-4 text-primary">
-                          #{task.id}
-                        </span>
-
-                        <span className="me-3">
-                          <span className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${listColor(task.status)}`}>
-                            {task.status}
+                        <div className="d-flex flex-wrap align-items-center text-secondary">
+                          <span className="me-3 fw-bold fs-4 text-primary">
+                            #{task.id}
                           </span>
-                        </span>
 
-                        <span className="me-3">
-                          <i>Opened: {formattedDate}</i>
+                          <span className="me-3">
+                            <span className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${listColor(task.status)}`}>
+                              {task.status}
+                            </span>
+                          </span>
+
+                          <span className="me-3">
+                            <i>Opened: {formattedDate}</i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-md-2 d-flex justify-content-md-end mt-2 mt-md-0">
+                        <span
+                          className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${priorityColor(task.priority)}`}
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          {task.priority}
                         </span>
                       </div>
                     </div>
-
-                    <div className="col-12 col-md-2 d-flex justify-content-md-end mt-2 mt-md-0">
-                      <span
-                        className={`badge rounded-pill px-3 py-2 fw-bold shadow-sm text-white ${priorityColor(task.priority)}`}
-                        style={{ fontSize: "0.85rem" }}
-                      >
-                        {task.priority}
-                      </span>
-                    </div>
-                  </div>
                   </button>
                 </li>
-                
+
               );
             })}
           </ul>
@@ -166,9 +177,9 @@ const ListTasks: React.FC = () => {
           projectId={Number(id)}
         />
       )}
-      {showTaskPopup &&(
-        <TaskPopup onClose={()=>setShowTaskPopup(false)} 
-        taskId={taskId}/>
+      {showTaskPopup && (
+        <TaskPopup onClose={() => setShowTaskPopup(false)}
+          taskId={taskId} />
       )}
 
       <style>{`

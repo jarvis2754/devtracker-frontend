@@ -167,7 +167,10 @@ const Settings: React.FC = () => {
                     )}
                   </form>
                 ) : (
+                  <div className="d-flex">
+                  <span className="spinner-border spinner-border-sm me-2 mt-1" role="status" />
                   <p>Loading user data...</p>
+                  </div>
                 )}
               </div>
             </div>
@@ -199,7 +202,10 @@ const Settings: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <p>Loading organization data...</p>
+                  <div className="d-flex">
+                  <span className="spinner-border spinner-border-sm me-2 mt-1" role="status" />
+                  <p>Loading Organization data...</p>
+                  </div>
                 )}
               </div>
             </div>

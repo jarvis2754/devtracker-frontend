@@ -67,6 +67,18 @@ li {
   }
 }
 
+@media (max-width: 768px) {
+  .custom-vw{
+    width: 90vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-vw-2 {
+    width: 100vw;
+  }
+}
+
 .custom-navbar {
   z-index: 1100 !important;
 }
