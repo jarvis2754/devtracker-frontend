@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { CircleUserRound } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { decodeJwt } from "jose";
 import Logout from "./Logout";
-import { CircleUserRound } from "lucide-react";
 
 interface UserProfileProps {
   onClose: () => void;
@@ -16,47 +16,31 @@ interface UserDTO {
   position: string;
 }
 
+const fetchUser = async (): Promise<UserDTO> => {
+  const rawToken = localStorage.getItem("token");
+  if (!rawToken) throw new Error("No JWT token found in localStorage.");
+
+  const token = rawToken.startsWith("Bearer ") ? rawToken.slice(7) : rawToken;
+
+  const decoded: any = decodeJwt(token);
+  const uid = decoded?.userId;
+  if (!uid) throw new Error("Token does not contain userId claim.");
+
+  const res = await axios.get<UserDTO>(
+    `https://devtracker-0es2.onrender.com/user/${uid}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  return res.data;
+};
+
 export default function UserProfile({ onClose }: UserProfileProps) {
-  const [user, setUser] = useState<UserDTO | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const rawToken = localStorage.getItem("token");
-    if (!rawToken) {
-      setError("No JWT token found in localStorage under key 'token'.");
-      return;
-    }
-
-    const token = rawToken.startsWith("Bearer ") ? rawToken.slice(7) : rawToken;
-
-    try {
-      const decoded: any = decodeJwt(token);
-      const uid = decoded?.userId ?? null;
-
-      if (!uid) {
-        setError("Token does not contain userId claim.");
-        return;
-      }
-      console.log("Decoded userId:", uid);
-
-      axios
-        .get<UserDTO>(`https://devtracker-0es2.onrender.com/user/${uid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setUser(res.data);
-        })
-        .catch((err) => {
-          setError("Failed to fetch user.");
-          console.error("Failed to fetch user", err);
-        });
-    } catch (err) {
-      setError("Failed to decode JWT token.");
-      console.error(err);
-    }
-  }, []);
+  const { data: user, error, isLoading } = useQuery<UserDTO, Error>({
+    queryKey: ["userProfile"],
+    queryFn: fetchUser,
+    staleTime: 1000 * 60 * 5, // cache for 5 minutes
+    retry: 1, // retry once on failure
+  });
 
   return (
     <div
@@ -70,8 +54,9 @@ export default function UserProfile({ onClose }: UserProfileProps) {
       }}
     >
       <div className="card-body">
-        {error && <p className="text-danger small">{error}</p>}
-        {user ? (
+        {isLoading && <p className="text-muted small">Loading...</p>}
+        {error && <p className="text-danger small">{error.message}</p>}
+        {user && !isLoading && !error && (
           <>
             <div className="d-flex m-4 justify-content-center">
               <CircleUserRound size={60} />
@@ -81,7 +66,6 @@ export default function UserProfile({ onClose }: UserProfileProps) {
             <p className="text-muted small mb-2">{user.email}</p>
             <p className="small">Position: {user.position}</p>
             <hr />
-
             <a href="/settings" className="d-block mb-2 text-decoration-none">
               Settings
             </a>
@@ -92,8 +76,6 @@ export default function UserProfile({ onClose }: UserProfileProps) {
               <Logout />
             </button>
           </>
-        ) : (
-          !error && <p className="text-muted small">Loading...</p>
         )}
       </div>
     </div>
