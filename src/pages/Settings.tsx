@@ -23,8 +23,6 @@ const Settings: React.FC = () => {
     headers: { Authorization: `Bearer ${token}` },
   };
 
-  /** ─────────── QUERIES ─────────── **/
-
   // Fetch user
   const {
     data: user,
@@ -53,8 +51,6 @@ const Settings: React.FC = () => {
     staleTime: Infinity,
   });
 
-  /** ─────────── MUTATIONS ─────────── **/
-
   const updateUserMutation = useMutation({
     mutationFn: (updated: TeamMember) =>
       axios.put(
@@ -77,8 +73,6 @@ const Settings: React.FC = () => {
       axios.get(`${BASE_URL}/organization/${org?.id}/passcode/${org?.creatorId}`),
   });
 
-  /** ─────────── HANDLERS ─────────── **/
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!updatedUser) return;
     setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
@@ -89,7 +83,6 @@ const Settings: React.FC = () => {
     setEditMode(false);
   };
 
-  /** ─────────── UI ─────────── **/
   return (
     <div className="container py-5">
       <div style={{ paddingTop: "60px" }}>
