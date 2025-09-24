@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { TeamMember } from "../types/ProjectTypes";
 
 interface Organization {
@@ -11,71 +12,84 @@ interface Organization {
 const BASE_URL = "https://devtracker-0es2.onrender.com";
 
 const Settings: React.FC = () => {
-  const [user, setUser] = useState<TeamMember | null>(null);
-  const [org, setOrg] = useState<Organization | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [updatedUser, setUpdatedUser] = useState<TeamMember | null>(null);
 
   const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
+  const userId = token ? JSON.parse(atob(token.split(".")[1])).userId : null;
 
   const axiosAuthConfig = {
     headers: { Authorization: `Bearer ${token}` },
   };
 
-  useEffect(() => {
-    if (!token) return;
+  /** ─────────── QUERIES ─────────── **/
 
-    const userId = JSON.parse(atob(token.split(".")[1])).userId;
+  // Fetch user
+  const {
+    data: user,
+    isLoading: userLoading,
+    error: userError,
+  } = useQuery<TeamMember>({
+    queryKey: ["user", userId],
+    queryFn: async () => {
+      const res = await axios.get(`${BASE_URL}/user/${userId}`, axiosAuthConfig);
+      return res.data;
+    },
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+  });
 
-    axios
-      .get(`${BASE_URL}/user/${userId}`, axiosAuthConfig)
-      .then((res) => {
-        setUser(res.data);
-        setUpdatedUser(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, [token]);
+  // Fetch organization (mocked — replace with API if you have one)
+  const {
+    data: org,
+    isLoading: orgLoading,
+    error: orgError,
+  } = useQuery<Organization>({
+    queryKey: ["organization"],
+    queryFn: async () => {
+      return { id: 1, name: "My Organization", creatorId: 1 };
+    },
+    staleTime: Infinity,
+  });
 
-  useEffect(() => {
-    setOrg({ id: 1, name: "My Organization", creatorId: 1 });
-  }, []);
+  /** ─────────── MUTATIONS ─────────── **/
 
-  const handleUserUpdate = () => {
-    if (!updatedUser) return;
+  const updateUserMutation = useMutation({
+    mutationFn: (updated: TeamMember) =>
+      axios.put(
+        `${BASE_URL}/user/update/${updated.userId}`,
+        updated,
+        axiosAuthConfig
+      ),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
+    },
+  });
 
-    axios
-      .put(`${BASE_URL}/user/update/${updatedUser.userId}`, updatedUser, axiosAuthConfig)
-      .then(() => {
-        alert("User updated successfully!");
-        setUser(updatedUser);
-        setEditMode(false);
-      })
-      .catch(() => alert("Failed to update user"));
-  };
+  const regeneratePasscodeMutation = useMutation({
+    mutationFn: () =>
+      axios.post(`${BASE_URL}/organization/${org?.id}/regenerate/${org?.creatorId}`),
+  });
+
+  const showPasscodeMutation = useMutation({
+    mutationFn: () =>
+      axios.get(`${BASE_URL}/organization/${org?.id}/passcode/${org?.creatorId}`),
+  });
+
+  /** ─────────── HANDLERS ─────────── **/
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!updatedUser) return;
     setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
   };
 
-  const handleRegeneratePasscode = () => {
-    if (!org || !user) return;
-
-    axios
-      .post(`${BASE_URL}/organization/${org.id}/regenerate/${org.creatorId}`)
-      .then((res) => alert(`New organization passcode: ${res.data}`))
-      .catch(() => alert("Failed to regenerate passcode"));
+  const handleUserUpdate = () => {
+    if (updatedUser) updateUserMutation.mutate(updatedUser);
+    setEditMode(false);
   };
 
-  const handleShowPasscode = () => {
-    if (!org || !user) return;
-
-    axios
-      .get(`${BASE_URL}/organization/${org.id}/passcode/${org.creatorId}`)
-      .then((res) => alert(`Organization passcode: ${res.data}`))
-      .catch(() => alert("Failed to fetch passcode"));
-  };
-
+  /** ─────────── UI ─────────── **/
   return (
     <div className="container py-5">
       <div style={{ paddingTop: "60px" }}>
@@ -88,7 +102,9 @@ const Settings: React.FC = () => {
                 <h4 className="mb-0">User Settings</h4>
               </div>
               <div className="card-body">
-                {user ? (
+                {userLoading && <p>Loading user...</p>}
+                {userError && <p className="text-danger">Failed to load user</p>}
+                {user && (
                   <form className="row g-3">
                     {editMode ? (
                       <>
@@ -98,9 +114,8 @@ const Settings: React.FC = () => {
                             type="text"
                             className="form-control"
                             name="userName"
-                            value={updatedUser?.userName || ""}
+                            value={updatedUser?.userName ?? user.userName}
                             onChange={handleInputChange}
-                            placeholder="Enter name"
                           />
                         </div>
                         <div className="col-12">
@@ -109,9 +124,8 @@ const Settings: React.FC = () => {
                             type="email"
                             className="form-control"
                             name="email"
-                            value={updatedUser?.email || ""}
+                            value={updatedUser?.email ?? user.email}
                             onChange={handleInputChange}
-                            placeholder="Enter email"
                           />
                         </div>
                         <div className="col-12">
@@ -121,16 +135,16 @@ const Settings: React.FC = () => {
                             className="form-control"
                             name="password"
                             onChange={handleInputChange}
-                            placeholder="Enter new password"
                           />
                         </div>
-                        <div className="col-12 d-flex flex-column flex-md-row gap-2 mt-2">
+                        <div className="col-12 d-flex gap-2 mt-2">
                           <button
                             type="button"
                             className="btn btn-primary flex-fill"
                             onClick={handleUserUpdate}
+                            disabled={updateUserMutation.isPending}
                           >
-                            Save Changes
+                            {updateUserMutation.isPending ? "Saving..." : "Save Changes"}
                           </button>
                           <button
                             type="button"
@@ -143,34 +157,22 @@ const Settings: React.FC = () => {
                       </>
                     ) : (
                       <>
-                        <div className="col-12">
-                          <p>
-                            <strong>Name:</strong> {user.userName}
-                          </p>
-                          <p>
-                            <strong>UserId:</strong> {user.uuid}
-                          </p>
-                          <p>
-                            <strong>Email:</strong> {user.email}
-                          </p>
-                        </div>
-                        <div className="col-12">
-                          <button
-                            type="button"
-                            className="btn btn-primary mt-2 w-100 w-md-auto"
-                            onClick={() => setEditMode(true)}
-                          >
-                            Edit User
-                          </button>
-                        </div>
+                        <p><strong>Name:</strong> {user.userName}</p>
+                        <p><strong>UserId:</strong> {user.uuid}</p>
+                        <p><strong>Email:</strong> {user.email}</p>
+                        <button
+                          type="button"
+                          className="btn btn-primary mt-2"
+                          onClick={() => {
+                            setEditMode(true);
+                            setUpdatedUser(user);
+                          }}
+                        >
+                          Edit User
+                        </button>
                       </>
                     )}
                   </form>
-                ) : (
-                  <div className="d-flex">
-                  <span className="spinner-border spinner-border-sm me-2 mt-1" role="status" />
-                  <p>Loading user data...</p>
-                  </div>
                 )}
               </div>
             </div>
@@ -181,30 +183,25 @@ const Settings: React.FC = () => {
                 <h4 className="mb-0">Organization Settings</h4>
               </div>
               <div className="card-body">
-                {org && user ? (
-                  <div className="d-flex flex-column align-items-center flex-md-row gap-2">
-                    <p className="mb-2 mb-md-0">
-                      <strong>Organization:</strong> {org.name}
-                    </p>
+                {orgLoading && <p>Loading org...</p>}
+                {orgError && <p className="text-danger">Failed to load org</p>}
+                {org && user && (
+                  <div className="d-flex gap-2 flex-column flex-md-row">
+                    <p><strong>Organization:</strong> {org.name}</p>
                     <button
-                      className={`btn ${user.userId === org.creatorId ? "btn-success" : "btn-secondary disabled"} flex-fill`}
-                      onClick={handleShowPasscode}
+                      className="btn btn-success"
+                      onClick={() => showPasscodeMutation.mutate()}
                       disabled={user.userId !== org.creatorId}
                     >
-                      Show Passcode
+                      {showPasscodeMutation.isPending ? "Loading..." : "Show Passcode"}
                     </button>
                     <button
-                      className={`btn ${user.userId === org.creatorId ? "btn-warning text-white" : "btn-secondary disabled"} flex-fill`}
-                      onClick={handleRegeneratePasscode}
+                      className="btn btn-warning text-white"
+                      onClick={() => regeneratePasscodeMutation.mutate()}
                       disabled={user.userId !== org.creatorId}
                     >
-                      Regenerate Passcode
+                      {regeneratePasscodeMutation.isPending ? "Working..." : "Regenerate Passcode"}
                     </button>
-                  </div>
-                ) : (
-                  <div className="d-flex">
-                  <span className="spinner-border spinner-border-sm me-2 mt-1" role="status" />
-                  <p>Loading Organization data...</p>
                   </div>
                 )}
               </div>

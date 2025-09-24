@@ -1,89 +1,91 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState, createContext } from "react";
+import { useEffect, createContext } from "react";
 import type { ProjectResponse } from "../types/ProjectTypes";
 import ProjectDetails from "./ProjectDetails";
 import axios from "axios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const ProjectContext = createContext<ProjectResponse | null>(null);
 
+// ✅ API call functions
+async function fetchProjects(): Promise<ProjectResponse[]> {
+  const res = await axios.get<ProjectResponse[]>(
+    "https://devtracker-0es2.onrender.com/project/all",
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+  return res.data;
+}
+
+async function fetchProject(projId: string): Promise<ProjectResponse> {
+  const res = await axios.get<ProjectResponse>(
+    `https://devtracker-0es2.onrender.com/project/search/${projId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+  return res.data;
+}
+
 export default function ProjectLayout() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [project, setProject] = useState<ProjectResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  // 1️⃣ Fetch all projects (cached for 5 mins)
+  const {
+    data: projects = [],
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useQuery<ProjectResponse[]>({
+    queryKey: ["projects"],
+    queryFn: fetchProjects,
+    staleTime: 5 * 60 * 1000,
+  });
 
+  // 2️⃣ Fetch single project (only if id exists)
+  const {
+    data: project,
+    isLoading: projectLoading,
+    error: projectError,
+  } = useQuery<ProjectResponse>({
+    queryKey: ["project", id],
+    queryFn: () => fetchProject(id!),
+    enabled: !!id, // don’t run if no id yet
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // 3️⃣ Ensure projectId logic (recent project / fallback to min project)
   useEffect(() => {
-    async function fetchProject(projId: string) {
-      try {
-        const res = await axios.get<ProjectResponse>(
-          `https://devtracker-0es2.onrender.com/project/search/${projId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+    if (!id && projects.length > 0) {
+      const recentId = localStorage.getItem("recentProjectId");
+      if (recentId) {
+        navigate(`/projects/${recentId}`, { replace: true });
+      } else {
+        const minProject = projects.reduce((a, b) =>
+          a.projectId < b.projectId ? a : b
         );
-
-        setProject(res.data);
-
-        // ✅ Save recent project
-        if (res.data.projectId !== undefined) {
-          localStorage.setItem("recentProjectId", res.data.projectId.toString());
-        }
-      } catch (error) {
-        console.error("Error fetching project", error);
-        navigate("/");
-      } finally {
-        setLoading(false);
+        navigate(`/projects/${minProject.projectId}`, { replace: true });
       }
     }
+  }, [id, projects, navigate]);
 
-    async function ensureProjectId() {
-      if (id) {
-        await fetchProject(id);
-        return;
-      }
-
-      try {
-        // 1️⃣ Check recent project first
-        const recentId = localStorage.getItem("recentProjectId");
-        if (recentId) {
-          navigate(`/projects/${recentId}`, { replace: true });
-          return;
-        }
-
-        // 2️⃣ Otherwise, fetch all projects
-        const response = await axios.get<ProjectResponse[]>(
-          "https://devtracker-0es2.onrender.com/project/all",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        const projects = response.data;
-        if (projects.length === 0) {
-          navigate("/"); // no projects → home
-        } else {
-          // Pick the min project
-          const minProject = projects.reduce((a, b) =>
-            a.projectId < b.projectId ? a : b
-          );
-          navigate(`/projects/${minProject.projectId}`, { replace: true });
-        }
-      } catch (error) {
-        console.error("Error fetching projects", error);
-        navigate("/"); // fallback
-      }
+  // ✅ Save projectId to localStorage when project loads
+  useEffect(() => {
+    if (project?.projectId !== undefined) {
+      localStorage.setItem("recentProjectId", project.projectId.toString());
+      // Pre-cache this project in queryClient for faster access later
+      queryClient.setQueryData(["project", project.projectId.toString()], project);
     }
+  }, [project, queryClient]);
 
-    ensureProjectId();
-  }, [id, navigate]);
-
-  if (loading) {
+  if (projectsLoading || projectLoading) {
     return (
       <section
         className="d-flex justify-content-center align-items-center"
@@ -107,8 +109,12 @@ export default function ProjectLayout() {
       </section>
     );
   }
+  if (projectsError || projectError) {
+    return <p className="text-danger">Error loading projects.</p>;
+  }
 
   if (!project) return <p>No project found.</p>;
+
 
   return (
     <ProjectContext.Provider value={project}>

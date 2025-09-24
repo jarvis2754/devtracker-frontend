@@ -1,52 +1,51 @@
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Todo from "../../components/Todo";
 import type { ProjectResponse, TeamMember } from "../../types/ProjectTypes";
 import { Link } from "react-router-dom";
 
+const fetchProjects = async (): Promise<ProjectResponse[]> => {
+  const res = await fetch("https://devtracker-0es2.onrender.com/project/all", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch projects");
+  }
+  return res.json();
+};
+
 const Home: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [project, setProjects] = useState<ProjectResponse[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  // useQuery will cache projects so it loads faster on revisit
+  const {
+    data: projects = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: fetchProjects,
+    staleTime: 1000 * 60 * 2, // 2 minutes - avoids refetching immediately
+  });
 
   const handleProjectAdded = (newProject: ProjectResponse) => {
-    setProjects([...project, newProject]); // add the new project to the state
+    // optimistically add project to cached list
+    projects.push(newProject);
   };
 
-  useEffect(() => {
-    fetch("https://devtracker-0es2.onrender.com/project/all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // if secured with JWT token
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch projects");
-        }
-        return res.json();
-      })
-      .then((data: ProjectResponse[]) => {
-        setProjects(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching projects:", error);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section
         className="d-flex justify-content-center align-items-center"
         style={{ height: "90vh" }}
       >
-        <div
-          className="container row mt-5"
-          style={{ width: "85%" }}
-        >
+        <div className="container row mt-5" style={{ width: "85%" }}>
           <div className="text-center">
             <div
               className="spinner-border text-primary mb-3"
@@ -62,15 +61,21 @@ const Home: React.FC = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="text-center mt-5 text-danger">
+        Failed to load projects. Please try again.
+      </div>
+    );
+  }
+
   return (
     <section
-      className="container d-flex justify-content-center flex-column "
+      className="container d-flex justify-content-center flex-column"
       style={{ height: "90vh" }}
     >
-      <div
-        className="row m-auto custom-width"
-        style={{ height: "55%" }}
-      >
+      <div className="row m-auto custom-width" style={{ height: "55%" }}>
+        {/* Create Project Card */}
         <div
           className="col-12 col-md-6 col-lg-4 p-2"
           style={{ height: "250px" }}
@@ -97,7 +102,8 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {project.map((proj) => (
+        {/* Project Cards */}
+        {projects.map((proj) => (
           <div
             key={proj.projectId}
             className="col-12 col-md-6 col-lg-4 p-2"
@@ -122,13 +128,17 @@ const Home: React.FC = () => {
                     {proj.projectDesc}
                   </p>
                   <p className="my-1">
-                    <strong>Team Lead:</strong> {((proj.teamLeadId as TeamMember) !== null) ? (proj.teamLeadId as TeamMember).uuid : "Unassigned"}
+                    <strong>Team Lead:</strong>{" "}
+                    {(proj.teamLeadId as TeamMember) !== null
+                      ? (proj.teamLeadId as TeamMember).uuid
+                      : "Unassigned"}
                   </p>
                   <p className="my-1">
                     <strong>Status:</strong>{" "}
                     <span
-                      className={`badge rounded-pill ${proj.status === "ACTIVE" ? "bg-success" : "bg-secondary"
-                        }`}
+                      className={`badge rounded-pill ${
+                        proj.status === "ACTIVE" ? "bg-success" : "bg-secondary"
+                      }`}
                     >
                       {proj.status}
                     </span>
@@ -142,15 +152,16 @@ const Home: React.FC = () => {
             </Link>
           </div>
         ))}
-        <div
-        className="col-12 col-md-6 col-lg-4 p-2"
-        style={{ height: "100px" }}
-      >
-        <div className="custom-card rounded-4 h-100 p-3"></div>
-      </div>
-      </div>
-      
 
+        <div
+          className="col-12 col-md-6 col-lg-4 p-2"
+          style={{ height: "100px" }}
+        >
+          <div className="custom-card rounded-4 h-100 p-3"></div>
+        </div>
+      </div>
+
+      {/* Popup */}
       {showPopup && (
         <Todo
           onClose={() => setShowPopup(false)}
@@ -160,4 +171,5 @@ const Home: React.FC = () => {
     </section>
   );
 };
+
 export default Home;

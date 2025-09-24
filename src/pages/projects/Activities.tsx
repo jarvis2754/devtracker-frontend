@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Container, Row, Col, Card, Table, Badge } from "react-bootstrap";
 import { Pie } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
@@ -8,8 +8,10 @@ import {
   ArcElement,
   Tooltip,
   Legend,
+  type ChartOptions,
 } from "chart.js";
-import type { ChartOptions } from "chart.js";
+import { useQuery } from "@tanstack/react-query";
+
 import type { IssueResponse } from "../../types/IssueTypes";
 import NoContent from "../../components/NoContent";
 import Loading from "../../components/Loading";
@@ -17,36 +19,32 @@ import Loading from "../../components/Loading";
 // Register Chart.js components & plugins
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
+// API function
+const fetchTasks = async (id: string): Promise<IssueResponse[]> => {
+  const res = await fetch(`https://devtracker-0es2.onrender.com/task/all/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch tasks");
+  return res.json();
+};
+
 const Activities: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [tasks, setTasks] = useState<IssueResponse[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchTasks = async () => {
-      try {
-        const res = await fetch(`https://devtracker-0es2.onrender.com/task/all/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch tasks");
-        const data: IssueResponse[] = await res.json();
-        setTasks(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, [id]);
+  const {
+    data: tasks = [],
+    isLoading,
+    isError,
+  } = useQuery<IssueResponse[]>({
+    queryKey: ["tasks", id],
+    queryFn: () => fetchTasks(id!),
+    enabled: !!id,
+  });
 
   // Count tasks by status
   const counts = {
@@ -54,7 +52,6 @@ const Activities: React.FC = () => {
     inProgress: tasks.filter((t) => t.status === "IN_PROGRESS").length,
     review: tasks.filter((t) => t.status === "AWAIT_APPROVAL").length,
     done: tasks.filter((t) => t.status === "COMPLETED").length,
-
   };
 
   // Chart Data
@@ -72,9 +69,7 @@ const Activities: React.FC = () => {
 
   const options: ChartOptions<"pie"> = {
     responsive: true,
-    layout: {
-      padding: 30,
-    },
+    layout: { padding: 30 },
     plugins: {
       legend: { display: false },
       datalabels: {
@@ -85,41 +80,34 @@ const Activities: React.FC = () => {
             0
           );
           if (sum === 0) return "0%";
-          let percentage = ((value * 100) / sum).toFixed(1) + "%";
-          return percentage;
+          return ((value * 100) / sum).toFixed(1) + "%";
         },
         anchor: "end",
         align: "end",
         font: { weight: "bold" },
-
       },
     },
   };
 
-
-  if (loading) {
-    return (
-      <Loading name="Activities dashboard"/>
-    );
-  }
+  if (isLoading) return <Loading name="Activities dashboard" />;
+  if (isError) return <NoContent />;
 
   return (
     <Container className="py-5 bg-light" fluid>
       <h2 className="text-center mb-4">Activities</h2>
 
-      {/* Chart + 6 Boxes Section */}
+      {/* Chart + Boxes Section */}
       {tasks.length === 0 && <NoContent />}
-      {tasks.length !== 0 &&
+      {tasks.length !== 0 && (
         <Row className="mb-5">
-          {/* Pie Chart (Left) */}
-
-
+          {/* Pie Chart */}
           <Col md={6} className="d-flex justify-content-center align-items-center">
             <div style={{ maxWidth: "280px" }}>
               <Pie data={data} options={options} />
             </div>
           </Col>
 
+          {/* Status Summary Boxes */}
           <Col md={6}>
             <Row className="mb-3">
               <Col md={6}>
@@ -168,7 +156,8 @@ const Activities: React.FC = () => {
               </Col>
             </Row>
           </Col>
-        </Row>}
+        </Row>
+      )}
 
       {/* History Table */}
       <Card className="shadow-sm">
@@ -192,12 +181,19 @@ const Activities: React.FC = () => {
                     <td>{idx + 1}</td>
                     <td>{task.title}</td>
                     <td>
-                      <Badge bg={
-                        task.status === "COMPLETED" ? "success" :
-                          task.status === "IN_PROGRESS" ? "warning" :
-                            task.status === "AWAIT_APPROVAL" ? "info" :
-                              task.status === "INCOMPLETE" ? "danger" : "secondary"
-                      }>
+                      <Badge
+                        bg={
+                          task.status === "COMPLETED"
+                            ? "success"
+                            : task.status === "IN_PROGRESS"
+                            ? "warning"
+                            : task.status === "AWAIT_APPROVAL"
+                            ? "info"
+                            : task.status === "TODO"
+                            ? "danger"
+                            : "secondary"
+                        }
+                      >
                         {task.status}
                       </Badge>
                     </td>
